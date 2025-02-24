@@ -18,17 +18,17 @@ export default function PerfilGuardia() {
             <Text style={styles.subtitle}>Tu perfil</Text>
             <View style={styles.form}>
                 <Text style={styles.label}>Nombre completo:</Text>
-                <TextInput style={styles.input} value="Juan Pérez" editable={false} />
+                <TextInput style={styles.input} placeholder="Juan Pérez" editable={false} />
                 <Text style={styles.label}>Correo electrónico:</Text>
-                <TextInput style={styles.input} value="juanperez@gmail.com" editable={false} />
+                <TextInput style={styles.input} placeholder="juanperez@gmail.com" editable={false} />
                 <Text style={styles.label}>Edad:</Text>
-                <TextInput style={styles.input} value="34" editable={false} />
+                <TextInput style={styles.input} placeholder="34" editable={false} />
                 <Text style={styles.label}>Fecha de nacimiento:</Text>
-                <TextInput style={styles.input} value="13/05/1987" editable={false} />
+                <TextInput style={styles.input} placeholder="13/05/1987" editable={false} />
                 <Text style={styles.label}>Dirección:</Text>
-                <TextInput style={styles.input} value="Av. Colima No.35 Calle Lluvia" editable={false} />
+                <TextInput style={styles.input} placeholder="Av. Colima No.35 Calle Lluvia" editable={false} />
                 <Text style={styles.label}>Teléfono:</Text>
-                <TextInput style={styles.input} value="777 123 1233" editable={false} />
+                <TextInput style={styles.input} placeholder="777 123 1233" editable={false} />
             </View>
             <TouchableOpacity style={styles.logoutButton}>
                 <Text style={styles.logoutText}>Cerrar sesión</Text>
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#E57E3B",
         alignItems: "center",
-        paddingTop: 40,
+        paddingTop: 20,
     },
     header: {
         flexDirection: "row",
