@@ -11,7 +11,7 @@ Este proyecto tiene como objetivo...
 - [Licencia](#licencia)
 - [Contacto](#contacto)
 
-# Contribuciones 
+# Contribuidores 
 - [DEV] Casarrubias Aleman Jose Eduardo
 - [DEV] Flores Vergara Rodolfo Angel    
 - [DEV] Medina Villa Abril Aidee
