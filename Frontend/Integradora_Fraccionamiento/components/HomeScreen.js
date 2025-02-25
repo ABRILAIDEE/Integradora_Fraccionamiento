@@ -1,20 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import ValidateQRScreen from './ValidateQRScreen';
 
 const shield = require('../assets/blindaje.png');
 const logout = require('../assets/cerrar-sesion.png');
 const user = require('../assets/cuenta.png');
 
-export default function SplashScreen() {
+export default function SplashScreen({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => console.log('Logout pressed')}>
+        <TouchableOpacity
+        onPress={() => navigation.navigate('LoginScreen')}
+        >
           <Image style={styles.logo} source={logout} />
         </TouchableOpacity>
         <Text style={styles.text}>SCSVF</Text>
-        <TouchableOpacity onPress={() => console.log('User pressed')}>
+        <TouchableOpacity
+        onPress={() => navigation.navigate('GuardProfileScreen')}
+        >
           <Image style={styles.logo} source={user} />
         </TouchableOpacity>
       </View>
@@ -28,8 +33,8 @@ export default function SplashScreen() {
           textColor='black'
           labelStyle={styles.buttonText}
           contentStyle={styles.button}
-          onPress={() => console.log('Pressed')}
-        >
+          onPress={() => navigation.navigate('ValidateQRScreen')}
+          >
           Escanear QR
         </Button>
       </View>

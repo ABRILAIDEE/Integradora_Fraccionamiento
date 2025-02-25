@@ -1,7 +1,8 @@
 import * as React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
-import { TextInput, Button, List, Dialog, Portal, Paragraph, Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
+import {TextInput, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Picker } from 'react-native';
+import {Button, List, Dialog, Portal, Paragraph, Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 const back = require('../assets/flecha-izquierda.png');
 const user = require('../assets/cuenta.png');
@@ -17,7 +18,7 @@ const theme = {
   },
 };
 
-export default function EntrySummary() {
+export default function EntrySummary({navigation}) {
   const [expanded, setExpanded] = useState(false);
   const [title, setTitle] = useState('Tipo de visita');
   const [visible, setVisible] = useState(false);
@@ -37,12 +38,12 @@ export default function EntrySummary() {
     <PaperProvider theme={theme}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => console.log('Logout pressed')}>
-            <Image style={styles.logo} source={back} />
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('PendingEntryScreen')} >
+                <Ionicons name="arrow-back" size={28} color="black" />
           </TouchableOpacity>
           <Text style={styles.text}>SCSVF</Text>
-          <TouchableOpacity onPress={() => console.log('User pressed')}>
-            <Image style={styles.logo} source={user} />
+          <TouchableOpacity>
           </TouchableOpacity>
         </View>
 
@@ -52,10 +53,12 @@ export default function EntrySummary() {
           <View style={styles.forInput}>
             <Text style={styles.label}> Contraseña </Text>
             <View style={styles.checkInput}>
-              <TouchableOpacity onPress={() => console.log('Is right')}>
+              <TouchableOpacity
+              onPress={() => console.log('Is right')}>
                 <Image style={styles.smallBtn} source={right} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Is wrong')}>
+              <TouchableOpacity
+              onPress={() => console.log('Is wrong')}>
                 <Image style={styles.smallBtn} source={wrong} />
               </TouchableOpacity>
             </View>
@@ -64,7 +67,7 @@ export default function EntrySummary() {
           <View style={styles.forInput}>
             <Text style={styles.label}> Placas </Text>
             <Button 
-              icon="qrcode-scan"
+              icon="camera"
               mode="contained"
               style={styles.mediumBtn}
               buttonColor="white"
@@ -78,7 +81,7 @@ export default function EntrySummary() {
           <View style={styles.forInput}>
             <Text style={styles.label}> Cajuela </Text>
             <Button 
-              icon="qrcode-scan"
+              icon="camera"
               mode="contained"
               style={styles.mediumBtn}
               buttonColor="white"
@@ -103,25 +106,11 @@ export default function EntrySummary() {
           
           <View style={styles.forInput}>
             <Text style={styles.label}> Tipo de visita </Text>
-            <List.Section style={styles.mediumBtn}>
-              <List.Accordion
-                title={title}
-                expanded={expanded}
-                onPress={handlePress}
-                style={styles.accordion}
-              >
-                <List.Item 
-                  title="Personal" 
-                  onPress={() => handleItemPress('Personal')} 
-                  style={styles.listItem} 
-                />
-                <List.Item 
-                  title="Técnica" 
-                  onPress={() => handleItemPress('Técnica')} 
-                  style={styles.listItem} 
-                />
-              </List.Accordion>
-            </List.Section>
+            <Picker style={styles.picker}>
+            <Picker.Item label="Seleccione" value="" />
+            <Picker.Item label="Tecnica" value="" />
+            <Picker.Item label="Familiar" value="" />
+            </Picker>
           </View>
           
           <View style={styles.forInput}>
@@ -139,7 +128,7 @@ export default function EntrySummary() {
           <View style={styles.forInput}>
             <Text style={styles.label}> INE del trabajador (Si aplica) </Text>
             <Button 
-              icon="qrcode-scan"
+              icon="camera"
               mode="contained"
               style={styles.mediumBtn}
               buttonColor="white"
@@ -164,15 +153,12 @@ export default function EntrySummary() {
 
           <View style={styles.forInput}>
             <Text style={styles.label}> Observaciones </Text>
-            <View style={styles.forText}>
-              <TextInput
-                numberOfLines={10}
-                style={styles.input}
-              />
-            </View>
+
+            <TextInput style={ styles.inputTextArea } multiline placeholder='Ingresa tus observaciones'></TextInput>
+            
           </View>
 
-          <View>
+          <View style={styles.forText}>
             <Button
               mode="contained"
               buttonColor='white'
@@ -188,7 +174,7 @@ export default function EntrySummary() {
             <Dialog visible={visible} onDismiss={hideDialog}>
               <Dialog.Title>Confirmación</Dialog.Title>
               <Dialog.Content>
-                <Paragraph>Su informe ha sido enviado con éxito.</Paragraph>
+                <Paragraph>¿Está seguro de que quiere enviar el informe?</Paragraph>
               </Dialog.Content>
               <Dialog.Actions>
                 <Button onPress={hideDialog}>Cancelar</Button>
@@ -256,7 +242,8 @@ const styles = StyleSheet.create({
       },
     label: {
         fontSize: 16,
-        marginLeft: 12,
+        marginLeft: 15,
+        marginBottom: 5,
         fontWeight: 'bold',
       },
     forInput: {
@@ -280,22 +267,44 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     button: {
-        paddingVertical: 5,
-        paddingHorizontal: 50,
+        paddingHorizontal: 80,
+        paddingVertical: 0,
       },
     forText: {
         alignItems: "center",
         alignSelf: "center",
+        marginBottom: 10
     },
     mediumBtn: {
         width: '60%',
         marginTop: 5,
-        marginLeft: 8,
+        marginLeft: 12,
     },
     accordion: {
         borderRadius: 15,
     },
     listItem: {
         backgroundColor: 'white',
-    }
+    },
+    picker: {
+      marginLeft: 12,
+      backgroundColor: "#FFF",
+      padding: 12,
+      borderRadius: 12,
+      width: "50%", 
+      height: "100%",
+      placeholderTextColor: "gray",
+      fontSize: 14
+    },
+    inputTextArea: {
+      backgroundColor: "#FFF",
+      padding: 10,
+      borderRadius: 12,
+      marginBottom: 15,
+      placeholderTextColor: "gray",
+      height: 80, 
+      width: "90%",
+      marginLeft: 15,
+    },
+    
 });

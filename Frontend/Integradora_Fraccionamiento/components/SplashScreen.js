@@ -1,15 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, Button } from 'react-native';
 
 const guard = require('../assets/policia.png');
 
-export default function SplashScreen() {
+export default function SplashScreen({navigation}) {
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={guard} />
       <Text style={styles.title}>SCSVF</Text>
       <Text style={styles.text}>Ingresando...</Text>
       <ActivityIndicator size="large" color="#000000" />
+
+      <Button
+        title="Ir a Login"
+        onPress={() => navigation.navigate('LoginScreen')}
+      />
+
     </View>
   );
 }

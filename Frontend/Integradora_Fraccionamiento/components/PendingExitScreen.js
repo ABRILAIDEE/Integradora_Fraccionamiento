@@ -1,12 +1,8 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native"; // Añadido `Image`
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Button } from "react-native-web";
 
-const back = require('../assets/flecha-izquierda.png');
-const user = require('../assets/cuenta.png');
-
-export default function PendingEntryScreen({navigation}) {
+export default function PendingExitScreen({navigation}) {
     const visitas = [
         { id: "1", nombre: "Angel Daniel", hora: "18:00" },
         { id: "2", nombre: "Angel Daniel", hora: "18:00" },
@@ -25,14 +21,15 @@ export default function PendingEntryScreen({navigation}) {
         <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity
-                onPress={() => navigation.navigate('ValidateQRScreen')}>
+                onPress={() => navigation.navigate('ValidateQRScreen')}
+                >
                     <Ionicons name="arrow-back" size={28} color="black" />
-                    </TouchableOpacity>
-                <Text style={styles.text}>SCSVF</Text>
+                </TouchableOpacity>
+                <Text style={styles.title}>SCSVF</Text>
                 <TouchableOpacity>
                 </TouchableOpacity>
             </View>
-            <Text style={styles.subtitle}>Entradas Pendientes</Text>
+            <Text style={styles.subtitle}>Salidas Pendientes</Text>
             <FlatList
                 data={visitas}
                 keyExtractor={(item) => item.id}
@@ -41,7 +38,7 @@ export default function PendingEntryScreen({navigation}) {
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <TouchableOpacity
-                        onPress={() => navigation.navigate('EntrySummaryScreen')} >
+                        onPress={() => navigation.navigate('ExitSummaryScreen')} >
                             <Text style={styles.cardText}>
                                 {item.nombre} | Hora: {item.hora}
                             </Text>
@@ -93,15 +90,4 @@ const styles = StyleSheet.create({
         color: "#000",
         textAlign: "center"
     },
-    logo: {
-        width: 30,
-        height: 30,
-    },
-    text: {
-        fontSize: 16,
-        marginLeft: 10,
-        marginRight: 10,
-        fontWeight: 'bold',
-        textAlign: 'center',
-      }
 });

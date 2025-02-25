@@ -4,7 +4,7 @@ import { Button, TextInput } from 'react-native-paper';
 
 const img = require('../assets/solitude.png');
 
-export default function LoginScreen() {
+export default function LoginScreen({navigation}) {
   return (
     <View style={styles.container}>
       <Image source={img} style={styles.image} />
@@ -28,8 +28,8 @@ export default function LoginScreen() {
           mode="contained"
           buttonColor='orange'
           contentStyle={styles.button}
-          onPress={() => console.log('Pressed')}
-        >
+          onPress={() => navigation.navigate('HomeScreen')}
+          >
         Ingresar
         </Button>
         <Button mode="text" textColor='black' onPress={() => console.log('Pressed')}>
