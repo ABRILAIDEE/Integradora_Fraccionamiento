@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import {ScrollView, FlatList} from "react-native-gesture-handler"
 
 export default function PendingExitScreen({navigation}) {
     const visitas = [
@@ -34,7 +35,7 @@ export default function PendingExitScreen({navigation}) {
                 data={visitas}
                 keyExtractor={(item) => item.id}
                 style={{ flex: 1, width: "100%" }}
-                contentContainerStyle={{ paddingBottom: 20 }}
+                contentContainerStyle={{ paddingBottom: 20, flexGrow: 1  }}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <TouchableOpacity
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     header: {
+        marginTop: '8%',
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

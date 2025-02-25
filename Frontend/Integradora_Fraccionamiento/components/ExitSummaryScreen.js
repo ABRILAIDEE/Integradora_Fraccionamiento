@@ -1,199 +1,103 @@
-import * as React from "react";
-import {TextInput, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Picker } from 'react-native';
-import {Button, List, Dialog, Portal, Paragraph, Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
-import { useState } from "react";
+import React from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import { Ionicons } from "@expo/vector-icons";
 
-const back = require('../assets/flecha-izquierda.png');
-const user = require('../assets/cuenta.png');
-const wrong = require('../assets/marca-x.png');
-const right = require('../assets/cheque.png');
+export default function ExitSummaryScreen({navigation}) {
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: 'black',
-    accent: 'yellow',
-  },
+    return (
+        <ScrollView>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity
+                    onPress={() => navigation.navigate('PendingExitScreen')} >
+                        <Ionicons name="arrow-back" size={28} color="black" />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>SCSVF</Text>
+                    <TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
+
+                <Text style={styles.subtitle}>Informe de salida</Text>
+
+                <View style={styles.form}>
+                    <Text style={styles.label}>Contraseña (frase):</Text>
+                    <View style={styles.containerButtons}>
+                        <TouchableOpacity style={styles.buttonSi}>
+                            <Ionicons name="checkmark" size={28} color="black" />                    
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonNo}>
+                            <Ionicons name="close" size={28} color="black" />                    
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.label}>Placas:</Text>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={{ color: "gray"}}>Foto de placas</Text>
+                        <Ionicons name="camera" size={28} color="black" />                    
+                    </TouchableOpacity>
+                    <Text style={styles.label}>Cajuela:</Text>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={{ color: "gray"}}>Foto de cajuela</Text>
+                        <Ionicons name="camera" size={28} color="black" />                    
+                    </TouchableOpacity>
+                    <Text style={styles.label}>Nombre del visitante:</Text>
+                    <View style={styles.containerButtons}>
+                        <TouchableOpacity style={styles.buttonSi}>
+                            <Ionicons name="checkmark" size={28} color="black" />                    
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonNo}>
+                            <Ionicons name="close" size={28} color="black" />                    
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.label}>Tipo de visita:</Text>
+                    <Picker style={styles.input}>
+                        <Picker.Item label="Seleccione" value="" />
+                        <Picker.Item label="Tecnica" value="" />
+                        <Picker.Item label="Familiar" value="" />
+                    </Picker>
+                    <Text style={styles.label}>Numero de casa:</Text>
+                    <View style={styles.containerButtons}>
+                        <TouchableOpacity style={styles.buttonSi}>
+                            <Ionicons name="checkmark" size={28} color="black" />                    
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonNo}>
+                            <Ionicons name="close" size={28} color="black" />                    
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.label}>INE del trabajador (si es el caso):</Text>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={{ color: "gray"}}>Foto de INE</Text>
+                        <Ionicons name="camera" size={28} color="black" />                    
+                    </TouchableOpacity>
+                    <Text style={styles.label}>Numero de pasajeros:</Text>
+                    <View style={styles.containerButtons}>
+                        <TouchableOpacity style={styles.buttonSi}>
+                            <Ionicons name="checkmark" size={28} color="black" />                    
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonNo}>
+                            <Ionicons name="close" size={28} color="black" />                    
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.label}>Observaciones:</Text>
+                    <TextInput style={ styles.inputTextArea } multiline placeholder='Ingresa tus observaciones'></TextInput>
+                    <TouchableOpacity style={styles.submitButton}>
+                        <Text style={styles.submitText}>Enviar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </ScrollView>
+    );
 };
 
-export default function ExitSummary({navigation}) {
-  const [expanded, setExpanded] = useState(false);
-  const [title, setTitle] = useState('Tipo de visita');
-  const [visible, setVisible] = useState(false);
-
-  const handlePress = () => setExpanded(!expanded);
-
-  const handleItemPress = (itemTitle) => {
-    setTitle(itemTitle);
-    setExpanded(false);
-  };
-
-  const showDialog = () => setVisible(true);
-
-  const hideDialog = () => setVisible(false);
-
-  return (
-    <PaperProvider theme={theme}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-          onPress={() => navigation.navigate('PendingExitScreen')} >
-            <Ionicons name="arrow-back" size={28} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.text}>SCSVF</Text>
-          <TouchableOpacity>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.subtitle}>Informe de salida </Text>
-
-        <ScrollView>
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Contraseña </Text>
-            <View style={styles.checkInput}>
-              <TouchableOpacity onPress={() => console.log('Is right')}>
-                <Image style={styles.smallBtn} source={right} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Is wrong')}>
-                <Image style={styles.smallBtn} source={wrong} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Placas </Text>
-            <Button 
-              icon="camera"
-              mode="contained"
-              style={styles.mediumBtn}
-              buttonColor="white"
-              textColor="black"
-              onPress={() => console.log('Pressed')}
-            >
-              Fotos de placas
-            </Button>
-          </View>
-
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Cajuela </Text>
-            <Button 
-              icon="camera"
-              mode="contained"
-              style={styles.mediumBtn}
-              buttonColor="white"
-              textColor="black"
-              onPress={() => console.log('Pressed')}
-            >
-              Foto de cajuela
-            </Button>
-          </View>
-          
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Nombre del visitante </Text>
-            <View style={styles.checkInput}>
-              <TouchableOpacity onPress={() => console.log('Is right')}>
-                <Image style={styles.smallBtn} source={right} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Is wrong')}>
-                <Image style={styles.smallBtn} source={wrong} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Tipo de visita </Text>
-            <Picker style={styles.picker}>
-            <Picker.Item label="Seleccione" value="" />
-            <Picker.Item label="Tecnica" value="" />
-            <Picker.Item label="Familiar" value="" />
-            </Picker>
-          </View>
-          
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Numero de casa </Text>
-            <View style={styles.checkInput}>
-              <TouchableOpacity onPress={() => console.log('Is right')}>
-                <Image style={styles.smallBtn} source={right} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Is wrong')}>
-                <Image style={styles.smallBtn} source={wrong} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.forInput}>
-            <Text style={styles.label}> INE del trabajador (Si aplica) </Text>
-            <Button 
-              icon="camera"
-              mode="contained"
-              style={styles.mediumBtn}
-              buttonColor="white"
-              textColor="black"
-              onPress={() => console.log('Pressed')}
-            >
-              Foto del INE
-            </Button>
-          </View>
-          
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Numero de pasajeros </Text>
-            <View style={styles.checkInput}>
-              <TouchableOpacity onPress={() => console.log('Is right')}>
-                <Image style={styles.smallBtn} source={right} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => console.log('Is wrong')}>
-                <Image style={styles.smallBtn} source={wrong} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.forInput}>
-            <Text style={styles.label}> Observaciones </Text>
-
-            <TextInput style={ styles.inputTextArea } multiline placeholder='Ingresa tus observaciones'></TextInput>
-            
-          </View>
-
-          <View style={styles.forText}>
-            <Button
-              mode="contained"
-              buttonColor='white'
-              textColor='black'
-              contentStyle={styles.button}
-              onPress={showDialog}
-            >
-              Enviar
-            </Button>
-          </View>
-
-          <Portal>
-            <Dialog visible={visible} onDismiss={hideDialog}>
-              <Dialog.Title>Confirmación</Dialog.Title>
-              <Dialog.Content>
-                <Paragraph>¿Está seguro de que quiere enviar el informe?</Paragraph>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={hideDialog}>Cancelar</Button>
-                <Button onPress={hideDialog}>Aceptar</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
-
-        </ScrollView>
-      </View>
-    </PaperProvider>
-  );
-}
-
-const styles = StyleSheet.create({
+const styles = {
     container: {
         flex: 1,
-        backgroundColor: "#F28D52",
+        backgroundColor: "#E57E3B",
+        alignItems: "center",
         paddingTop: 20,
     },
     header: {
+      marginTop: '8%',
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -213,95 +117,86 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         textAlign: "center",
     },
-    card: {
-        backgroundColor: "#FFF",
-        padding: 15,
-        borderRadius: 10,
-        width: "85%",
-        alignSelf: "center",
-        marginBottom: 5, 
+    form: {
+        width: "90%",
     },
-    cardText: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: "#000",
-        textAlign: "center"
-    },
-    logo: {
-        width: 30,
-        height: 30,
-    },
-    text: {
-        fontSize: 16,
-        marginLeft: 10,
-        marginRight: 10,
-        fontWeight: 'bold',
-        textAlign: 'center',
-      },
     label: {
         fontSize: 16,
-        marginLeft: 15,
+        fontWeight: "bold",
+        color: "#000",
         marginBottom: 5,
-        fontWeight: 'bold',
-      },
-    forInput: {
-        marginBottom: 12
-      },
-    checkInput: {
-        flexDirection: "row",
-        alignItems: "center",
-        width: "90%",
-        alignSelf: "center",
-      },
-    smallBtn: {
-        width: 30,
-        height: 30,
-        marginRight: 15,
-        marginTop: 5
+        marginTop:10
     },
     input: {
-        height: 40,
-        width: '120%',
-        marginBottom: 20,
-    },
-    button: {
-        paddingHorizontal: 80,
-        paddingVertical: 0,
-      },
-    forText: {
-        alignItems: "center",
-        alignSelf: "center",
-        marginBottom: 10
-    },
-    mediumBtn: {
-        width: '60%',
-        marginTop: 5,
-        marginLeft: 12,
-    },
-    accordion: {
-        borderRadius: 15,
-    },
-    listItem: {
-        backgroundColor: 'white',
-    },
-    picker: {
-      marginLeft: 12,
-      backgroundColor: "#FFF",
-      padding: 12,
-      borderRadius: 12,
-      width: "50%", 
-      height: "100%",
-      placeholderTextColor: "gray",
-      fontSize: 14
+        backgroundColor: "#FFF",
+        padding: 5,
+        borderRadius: 12,
+        marginBottom: 15,
+        width: "50%", 
+        height: "6%",
+        placeholderTextColor: "gray",
+        fontSize: 14
     },
     inputTextArea: {
-      backgroundColor: "#FFF",
-      padding: 10,
-      borderRadius: 12,
-      marginBottom: 15,
-      placeholderTextColor: "gray",
-      height: 80, 
-      width: "90%",
-      marginLeft: 15,
+        backgroundColor: "#FFF",
+        padding: 10,
+        borderRadius: 12,
+        marginBottom: 15,
+        placeholderTextColor: "gray",
+        height: 80, 
+        width: "100%"
     },
-});
+    submitButton: { 
+        backgroundColor: '#EBEBF2', 
+        alignItems: 'center', 
+        padding: 10,
+        borderRadius: 20,
+        marginBottom: -30,
+        height: "5.5%"
+    },
+    submitText: { 
+        color: '#000', 
+        fontWeight: 'bold',
+        textAlign: "center",
+        margin: "auto",
+        fontSize: 18
+    },
+    button: { 
+        backgroundColor: '#FFF', 
+        padding: 10, 
+        borderRadius: 12, 
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        marginBottom: 10, 
+        width: "50%", 
+        height: "5%"},
+    buttonSi: { 
+        backgroundColor: '#FFF', 
+        padding: 4, 
+        borderRadius: 10, 
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        marginBottom: 10, 
+        width: "10%", 
+        height: "80%", 
+        marginRight: 5,
+      },
+    buttonNo: { 
+        backgroundColor: '#FFF', 
+        padding: 4, 
+        borderRadius: 10, 
+        alignItems: 'center', 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        marginBottom: 10, 
+        width: "10%", 
+        height: "80%", 
+        marginLeft: 5},
+    containerButtons: {
+        flexDirection: "row",
+        justifyItems: "start",
+        marginBottom: -15,
+    }
+};

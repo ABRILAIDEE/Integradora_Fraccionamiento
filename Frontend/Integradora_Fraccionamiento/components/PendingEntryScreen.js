@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native"; // Añadido `Image`
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"; // Añadido `Image`
 import { Ionicons } from "@expo/vector-icons";
+import {ScrollView, FlatList} from "react-native-gesture-handler"
+
 import { Button } from "react-native-web";
 
 const back = require('../assets/flecha-izquierda.png');
@@ -37,7 +39,7 @@ export default function PendingEntryScreen({navigation}) {
                 data={visitas}
                 keyExtractor={(item) => item.id}
                 style={{ flex: 1, width: "100%" }}
-                contentContainerStyle={{ paddingBottom: 20 }}
+                contentContainerStyle={{ paddingBottom: 20,  flexGrow: 1  }}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <TouchableOpacity
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     header: {
+        marginTop: '8%',
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

@@ -31,7 +31,8 @@ export default function GuardProfileScreen({navigation}) {
                 <Text style={styles.label}>Teléfono:</Text>
                 <TextInput style={styles.input} value="777 123 1233" editable={false} />
             </View>
-            <TouchableOpacity style={styles.logoutButton}>
+            <TouchableOpacity style={styles.logoutButton}
+            onPress={() => navigation.navigate('LoginScreen')} >
                 <Text style={styles.logoutText}>Cerrar sesión</Text>
             </TouchableOpacity>
         </ScrollView>
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
         paddingTop: 40,
     },
     header: {
+        marginTop: '8%',
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

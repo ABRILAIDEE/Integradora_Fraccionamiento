@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F28D52',
   },
   header: {
+    marginTop: '8%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

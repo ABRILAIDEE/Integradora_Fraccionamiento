@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   image: {
     position: 'absolute',
     top: 0,
-    width: '100%',
+    width: '120%',
     height: '50%',
     resizeMode: 'cover',
   },
