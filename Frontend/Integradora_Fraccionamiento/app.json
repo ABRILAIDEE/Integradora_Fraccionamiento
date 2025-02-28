@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Integradora_Fraccionamiento",
+    "slug": "Integradora_Fraccionamiento",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/policia.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F28D52"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/policia.png",
+        "backgroundColor": "#F28D52"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
