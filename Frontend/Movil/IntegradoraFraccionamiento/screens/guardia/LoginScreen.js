@@ -1,10 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
-
+import { AuthContext } from '../../context/AuthContext';
+import { useState, useContext } from "react";
 const img = require('../../assets/solitude.png');
 
 export default function LoginScreen({ navigation }) {
+  const { login } = useContext(AuthContext);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <View style={styles.container}>
       <Image source={img} style={styles.image} />
@@ -18,6 +23,8 @@ export default function LoginScreen({ navigation }) {
           mode="outlined"
           style={styles.input}
           theme={{ colors: { primary: 'orange', underlineColor: 'transparent' } }}
+          autoCapitalize="none"
+          onChangeText={(text) => setUsername(text.trim().toLowerCase())}
         />
         <TextInput
           label="Contraseña"
@@ -25,13 +32,15 @@ export default function LoginScreen({ navigation }) {
           style={[styles.input, { marginBottom: 40 }]}
           secureTextEntry
           theme={{ colors: { primary: 'orange', underlineColor: 'transparent' } }}
+          onChangeText={setPassword}
         />
 
         <Button
           mode="contained"
           buttonColor="orange"
           contentStyle={styles.button}
-          onPress={() => navigation.navigate('HomeScreen')}
+          onPress={() => login(username, password)}
+          //onPress={() => navigation.navigate('HomeScreen')}
         >
           Ingresar
         </Button>

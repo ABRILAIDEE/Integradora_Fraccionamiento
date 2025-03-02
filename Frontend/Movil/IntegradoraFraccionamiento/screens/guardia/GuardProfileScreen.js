@@ -1,8 +1,11 @@
 import React from "react";
 import { ScrollView, View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from '../../context/AuthContext';
+import { useState, useContext } from "react";
 
 export default function GuardProfileScreen({navigation}) {
+    const { logout } = useContext(AuthContext);
     return (
             <ScrollView contentContainerStyle={styles.container} style={{ flex: 1 }}>
             <View style={styles.header}>
@@ -32,7 +35,7 @@ export default function GuardProfileScreen({navigation}) {
                 <TextInput style={styles.input} value="777 123 1233" editable={false} />
             </View>
             <TouchableOpacity style={styles.logoutButton}
-            onPress={() => navigation.navigate('LoginScreen')} >
+            onPress={logout} >
                 <Text style={styles.logoutText}>Cerrar sesión</Text>
             </TouchableOpacity>
         </ScrollView>

@@ -1,20 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import { useState, useContext } from "react";
+import { AuthContext } from '../../context/AuthContext';
 import ValidateQRScreen from './ValidateQRScreen';
 
 const shield = require('../../assets/blindaje.png');
-const logout = require('../../assets/cerrar-sesion.png');
+const leave = require('../../assets/cerrar-sesion.png');
 const user = require('../../assets/cuenta.png');
 
 export default function SplashScreen({navigation}) {
+  const { logout } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-        onPress={() => navigation.navigate('LoginScreen')}
+        <TouchableOpacity onPress={logout}
         >
-          <Image style={styles.logo} source={logout} />
+          <Image style={styles.logo} source={leave} />
         </TouchableOpacity>
         <Text style={styles.text}>SCSVF</Text>
         <TouchableOpacity
