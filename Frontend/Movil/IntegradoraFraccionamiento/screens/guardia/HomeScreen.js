@@ -10,7 +10,7 @@ const leave = require('../../assets/cerrar-sesion.png');
 const user = require('../../assets/cuenta.png');
 
 export default function SplashScreen({navigation}) {
-  const { logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext); 
 
   return (
     <View style={styles.container}>
