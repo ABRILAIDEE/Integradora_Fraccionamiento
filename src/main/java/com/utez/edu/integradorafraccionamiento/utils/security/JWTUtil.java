@@ -1,5 +1,6 @@
 package com.utez.edu.integradorafraccionamiento.utils.security;
 
+import com.utez.edu.integradorafraccionamiento.modules.resident.Resident;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,12 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// 5.- Crear nuestras utilidades para JWT
 @Service
 public class JWTUtil {
 
-    @Value("${secret.key}") // La clave secreta debe ser una cadena segura
+    @Value("${secret.key}")
     private String SECRET_KEY;
+
+    @Value("${jwt.expiration.time}")
+    private long jwtExpirationTime;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -34,7 +37,7 @@ public class JWTUtil {
 
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY.getBytes()) // Convertimos la clave a bytes
+                .setSigningKey(SECRET_KEY.getBytes())
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -47,9 +50,6 @@ public class JWTUtil {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
-
-    @Value("${jwt.expiration.time}")
-    private long jwtExpirationTime;
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -64,5 +64,15 @@ public class JWTUtil {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    // método para generar tokens de residentes
+    public String generateTokenForResident(Resident resident) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", "RESIDENT");
+        claims.put("id", resident.getId());
+        claims.put("name", resident.getNombre());
+
+        return createToken(claims, resident.getTelefono());
     }
 }
