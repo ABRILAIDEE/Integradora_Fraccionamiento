@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignorar archivo de configuración con credenciales sensibles
+src/main/resources/application.properties
+
