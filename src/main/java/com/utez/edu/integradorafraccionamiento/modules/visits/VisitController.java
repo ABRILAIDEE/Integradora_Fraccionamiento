@@ -80,4 +80,19 @@ public class VisitController {
         return visitService.validateVisit(id);
     }
 
+    @GetMapping("/{id}/verificar")
+    @Secured({"ROLE_GUARD"}) // Solo los guardias pueden verificar QR
+    public ResponseEntity<?> verificarQR(@PathVariable long id) {
+        return visitService.verificarQR(id);
+    }
+
+    @PatchMapping("/{id}/cambiarEstado")
+    @Secured({"ROLE_GUARD"}) // Solo guardias pueden cambiar el estado
+    public ResponseEntity<?> cambiarEstado(@PathVariable long id) {
+        return visitService.cambiarEstado(id);
+    }
+
+
+
+
 }

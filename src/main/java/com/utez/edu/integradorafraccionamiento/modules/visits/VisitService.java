@@ -160,4 +160,45 @@ public class VisitService {
                 })
                 .orElse(ResponseEntity.badRequest().body("Visita no encontrada."));
     }
+
+    public ResponseEntity<?> verificarQR(long id) {
+        Optional<Visit> optionalVisit = visitRepository.findById(id);
+        if (optionalVisit.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Visita no encontrada.");
+        }
+
+        Visit visit = optionalVisit.get();
+        int statusId = visit.getStatus().getId(); // Obtener ID del estado
+
+        if (statusId == 1) {
+            return ResponseEntity.ok(Map.of("nextStep", "entrada", "status", "En Progreso"));
+        } else if (statusId == 2) {
+            return ResponseEntity.ok(Map.of("nextStep", "salida", "status", "Terminada"));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("QR no válido.");
+        }
+    }
+
+    // CAMBIAR ESTADO
+    public ResponseEntity<?> cambiarEstado(long id) {
+        Optional<Visit> optionalVisit = visitRepository.findById(id);
+        if (optionalVisit.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Visita no encontrada.");
+        }
+
+        Visit visit = optionalVisit.get();
+        int currentStatus = visit.getStatus().getId();
+
+        if (currentStatus == 1) {
+            visit.setStatus(new Status(2, "En Progreso")); // Cambia a "En Progreso"
+        } else if (currentStatus == 2) {
+            visit.setStatus(new Status(3, "Terminada")); // Cambia a "Terminada"
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se puede cambiar el estado.");
+        }
+
+        visitRepository.save(visit);
+        return ResponseEntity.ok("Estado actualizado.");
+    }
+
 }
