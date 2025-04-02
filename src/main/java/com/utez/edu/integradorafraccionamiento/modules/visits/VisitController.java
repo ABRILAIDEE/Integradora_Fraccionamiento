@@ -92,7 +92,4 @@ public class VisitController {
         return visitService.cambiarEstado(id);
     }
 
-
-
-
 }
