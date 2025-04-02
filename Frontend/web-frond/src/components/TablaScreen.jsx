@@ -1,18 +1,33 @@
 import React from 'react';
-import usuarioIcon from '../assets/usuario.png';
-
+import { useNavigate } from 'react-router-dom';
+import usuario from '../assets/usuario.png';
 const TablaScreen = () => {
+  const navigate = useNavigate();
+
+  const handleGoToLogin = () => {
+    navigate('/login'); // Redirige a LoginScreen
+  };
+  const handleGoToPerfil = () => {
+    navigate('/perfil'); // Redirige a PerfilScreen
+  };
+
   return (
     <div style={styles.container}>
+       {/* Encabezado */}
+                    <div style={styles.header}>
+                      <span onClick={handleGoToLogin} style={styles.logo}>SCSVF</span>
+                      <div style={styles.headerRight}>
+                        <button onClick={handleGoToLogin} style={styles.logoutButton}>Cerrar sesión</button>
+                       {/* Icono al lado derecho */}
+                                                     <img 
+                                                       src={usuario} 
+                                                       alt="Usuario" 
+                                                       style={styles.userIcon} 
+                                                       onClick={handleGoToPerfil} // Redirige a PerfilScreen
+                                                     /></div>
+                    </div>
 
-      <div style={styles.header}>
-        <span style={styles.logo}>SCSVF</span>
-        <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
-          <button style={styles.logoutButton}>Cerrar sesión</button>
-          <img src={usuarioIcon} alt="Usuario" style={styles.userIcon}/>
-        </div>
-      </div>
-
+      {/* Contenido */}
       <div style={styles.content}>
         <h1 style={styles.title}>Mis visitas</h1>
         <table style={styles.table}>
@@ -57,13 +72,22 @@ const styles = {
     flexDirection:'column',
     alignItems:'center',
   },
+  headerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
   header: {
-    width:'100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#EBEBF2',
-    padding: '15px 20px',
+    padding: '10px 20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    zIndex: 2, 
   },
   logo: {
     fontSize: '22px',

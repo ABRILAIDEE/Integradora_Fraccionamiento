@@ -1,15 +1,33 @@
 import React from 'react';
 import qrCode from '../assets/qr-code.png';
 
+import { useNavigate } from 'react-router-dom';
+import usuario from '../assets/usuario.png';
 const QRScreen = () => {
+  const navigate = useNavigate();
+
+  const handleGoToPerfil = () => {
+    navigate('/perfil'); // Redirige a PerfilScreen
+  };
+  
+  const handleGoToLogin = () => {
+    navigate('/login'); // Redirige a LoginScreen
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <span style={styles.logo}>SCSVF</span>
-        <div style={styles.rightHeader}>
-          <button style={styles.logoutButton}>Cerrar sesión</button>
-          <div style={styles.userIcon}>👤</div>
-        </div>
+         <div style={styles.headerRight}>
+            <span onClick={handleGoToLogin} style={styles.logoutButton}>Cerrar sesión</span>
+            {/* Redirige a PerfilScreen */}
+            <img 
+              src={usuario} 
+              alt="Usuario" 
+              style={styles.userIcon} 
+              onClick={handleGoToPerfil} // Evento para redirigir
+            />
+         </div>
       </div>
 
       <div style={styles.content}>
@@ -23,30 +41,35 @@ const QRScreen = () => {
 
 const styles = {
   container: {
-    width: '100vw',
-    height: '100vh',
+    width: '99vw',
+    height: '97vh',
     backgroundColor: '#F09560',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
+  headerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
   header: {
-    backgroundColor: '#FFFFFF',
-    width: '100%',
-    padding: '15px 20px',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#EBEBF2',
+    padding: '10px 20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    zIndex: 2, 
   },
   logo: {
     fontSize: '22px',
     fontWeight: 'bold',
   },
-  rightHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
+  
   logoutButton: {
     backgroundColor: '#591202',
     color: '#FFFFFF',

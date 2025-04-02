@@ -1,14 +1,27 @@
 import React from 'react';
 import usuarioIcon from '../assets/usuario.png';
+import { useNavigate } from 'react-router-dom';
 
 const ValidarLogin = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate('/home'); // Redirige a HomeScreen
+  };
+  
+  const handleGoToLogin = () => {
+    navigate('/login'); // Redirige a LoginScreen
+  };
+
   return (
     <div style={styles.container}>
-      {/* Encabezado */}
-      <div style={styles.header}>
-        <span style={styles.logo}>SCSVF</span>
+       {/* Encabezado */}
+       <div style={styles.header}>
+        <span onClick={handleGoToLogin} style={styles.logo}>SCSVF</span>
+     
         <button style={styles.adminButton}>Soy Administrador</button>
       </div>
+      
       {/* Contenido */}
       <div style={styles.content}>
         <div style={styles.iconContainer}>
@@ -20,7 +33,8 @@ const ValidarLogin = () => {
           placeholder="Ingresa tu código" 
           style={styles.input}
         />
-        <button style={styles.button}>Ingresar</button>
+        {/* Conexión del botón a HomeScreen */}
+        <button onClick={handleLogin} style={styles.button}>Ingresar</button>
       </div>
     </div>
   );

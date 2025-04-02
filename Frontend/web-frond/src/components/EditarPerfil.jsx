@@ -1,12 +1,20 @@
 import React from 'react';
+
+import { useNavigate } from 'react-router-dom';
 import usuarioIcon from '../assets/usuario.png';
 
 const EditarPerfil = () => {
+  const navigate = useNavigate(); // Hook para navegar
+
+  const handleNavigateToLogin = () => {
+    navigate('/login'); // Navegar a la pantalla de login
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <span style={styles.logo}>SCSVF</span>
-        <button style={styles.logoutButton}>Cerrar sesión</button>
+        <span style={styles.logo} onClick={handleNavigateToLogin}>SCSVF</span>
+        <button onClick={handleNavigateToLogin} style={styles.logoutButton}>Cerrar sesión</button>
       </div>
 
       <div style={styles.content}>
@@ -17,26 +25,24 @@ const EditarPerfil = () => {
 
           <div style={styles.formContainer}>
             <label style={styles.label}>Nombre completo:</label>
-            <input style={styles.input} value="Juan Pérez" readOnly />
+            <input style={styles.input} value="Nombre" readOnly />
 
             <label style={styles.label}>Correo electrónico:</label>
-            <input style={styles.input} value="juanperez@gmail.com" readOnly />
+            <input style={styles.input} value="Correo" readOnly />
 
             <label style={styles.label}>Edad:</label>
-            <input style={styles.input} value="34" readOnly />
+            <input style={styles.input} value="Edad" readOnly />
 
             <label style={styles.label}>Fecha de nacimiento:</label>
-            <input style={styles.input} value="13/05/1987" readOnly />
+            <input style={styles.input} value="Fecha de nacimiento" readOnly />
 
             <label style={styles.label}>Dirección:</label>
-            <input style={styles.input} value="Av. Colima No.35 Calle Lluvia" readOnly />
+            <input style={styles.input} value="Direccion" readOnly />
 
             <label style={styles.label}>Teléfono:</label>
-            <input style={styles.input} value="777 123 1233" readOnly />
+            <input style={styles.input} value="Telefono" readOnly />
           </div>
 
-         
-          
           <button style={styles.editButton}>Editar Perfil</button>
         </div>
       </div>
@@ -52,7 +58,7 @@ const styles = {
     backgroundRepeat: 'no-repeat', 
     backgroundAttachment: 'center', 
     width: '100vw',
-    height: '130vh',
+    height: '10vh',
     position: 'center', 
     top: 0,
     left: 0,
@@ -86,9 +92,9 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'rgba(240, 149, 96, 0.9)', 
-    padding: '160px',
+    padding: '30px',
     borderRadius: '15px',
-    height: '670px',
+    height: '874px',
   },
   title: {
     fontSize: '36px',
@@ -147,7 +153,7 @@ const styles = {
   editButton: {
     backgroundColor: '#591202',
     color: '#FFFFFF',
-    padding: '12px',
+    padding: '18px',
     width: '150px',
     borderRadius: '25px',
     border: 'none',

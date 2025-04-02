@@ -1,20 +1,31 @@
 import React from 'react';
-import usuarioIcon from '../assets/usuario.png'; // Ruta de la imagen
-
+import usuarioIcon from '../assets/usuario.png';
+import { useNavigate } from 'react-router-dom';
 
 const LoginScreen = () => {
+  const navigate = useNavigate();
+
+  const handleGoToLogin = () => {
+    navigate('/login'); // Redirige a LoginScreen
+  };
+  
+  const handleSubmit = () => {
+    navigate('/validar');
+  };
+
   return (
     <div style={styles.container}>
-      {/* Encabezado */}
-      <div style={styles.header}>
-        <span style={styles.logo}>SCSVF</span>
+        {/* Encabezado */}
+        <div style={styles.header}>
+        <span onClick={handleGoToLogin} style={styles.logo}>SCSVF</span>
+     
         <button style={styles.adminButton}>Soy Administrador</button>
       </div>
 
       {/* Contenido */}
       <div style={styles.overlay}>
         <div style={styles.content}>
-        <div style={styles.iconContainer}>
+          <div style={styles.iconContainer}>
             <img src={usuarioIcon} alt="User Icon" style={styles.icon} />
           </div>
           <h1 style={styles.title}>SCSVF</h1>
@@ -23,7 +34,8 @@ const LoginScreen = () => {
             placeholder="Ingresa tu número telefónico" 
             style={styles.input}
           />
-          <button style={styles.button}>Mandar código</button>
+          {/* Conexión del botón con la pantalla de ValidarLogin */}
+          <button onClick={handleSubmit} style={styles.button}>Mandar código</button>
         </div>
       </div>
     </div>

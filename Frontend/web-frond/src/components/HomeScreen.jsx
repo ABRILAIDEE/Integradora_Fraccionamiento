@@ -1,23 +1,55 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import usuarioICONO from '../assets/usuarioICONO.png'; // Importar la imagen
+import usuario from '../assets/usuario.png';
 
 const HomeScreen = () => {
+  const navigate = useNavigate();
+
+  const handleCrearVisita = () => {
+    navigate('/crear-visita');
+  };
+
+  const handleMisVisitas = () => {
+    navigate('/tabla');
+  };
+  
+  const handleGoToLogin = () => {
+    navigate('/login'); // Redirige a LoginScreen
+  };
+  const handleGoToPerfil = () => {
+    navigate('/perfil'); // Redirige a PerfilScreen
+  };
+  
+
   return (
     <div style={styles.container}>
-      {/* Encabezado */}
-      <div style={styles.header}>
-        <span style={styles.logo}>SCSVF</span>
-        <button style={styles.logoutButton}>Cerrar sesión</button>
-      </div>
-      
-      {/* Contenido principal */}
-      <div style={styles.content}>
-        <h1 style={styles.title}>¿Qué vas a hacer hoy?</h1>
-        <div style={styles.iconContainer}>
-          <span style={styles.icon}>📍</span>
+        {/* Encabezado */}
+        <div style={styles.header}>
+          <span onClick={handleGoToLogin} style={styles.logo}>SCSVF</span>
+          <div style={styles.headerRight}>
+            <span onClick={handleGoToLogin} style={styles.logoutButton}>Cerrar sesión</span>
+            {/* Icono al lado derecho */}
+            <img 
+              src={usuario} 
+              alt="Usuario" 
+              style={styles.userIcon} 
+              onClick={handleGoToPerfil} // Redirige a PerfilScreen
+            />
+          </div>
         </div>
-        <button style={styles.button}>Crear visitas</button>
-        <button style={styles.button}>Mis visitas</button>
-      </div>
+      
+        {/* Contenido principal */}
+        <div style={styles.content}>
+          <h1 style={styles.title}>¿Qué vas a hacer hoy?</h1>
+          <div style={styles.iconContainer}>
+            {/* Reemplazar icono con imagen */}
+            <img src={usuarioICONO} alt="Usuario Icono" style={styles.iconImage} />
+          </div>
+          {/* Conexión de botones */}
+          <button onClick={handleCrearVisita} style={styles.button}>Crear visitas</button>
+          <button onClick={handleMisVisitas} style={styles.button}>Mis visitas</button>
+        </div>
     </div>
   );
 };
@@ -25,7 +57,7 @@ const HomeScreen = () => {
 const styles = {
   container: {
     backgroundImage: `url('/background.jpg')`, 
-    backgroundSize: 'to', 
+    backgroundSize: 'cover', 
     backgroundPosition: 'center', 
     backgroundRepeat: 'no-repeat', 
     backgroundAttachment: 'fixed', 
@@ -47,6 +79,11 @@ const styles = {
     alignItems: 'center',
     zIndex: 2, 
   },
+  headerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
   logo: {
     fontSize: '24px',
     fontWeight: 'bold',
@@ -60,6 +97,13 @@ const styles = {
     borderRadius: '15px',
     cursor: 'pointer',
     fontWeight: 'bold',
+  },
+  userIcon: {
+    width: '40px', // Tamaño del icono
+    height: '40px',
+    borderRadius: '50%', // Icono redondo
+    objectFit: 'cover',
+    cursor: 'pointer',
   },
   content: {
     display: 'flex',
@@ -81,8 +125,10 @@ const styles = {
     marginBottom: '10px',
     overflow: 'hidden',
   },
-  icon: {
-    fontSize: '60px',
+  iconImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
   },
   title: {
     fontSize: '28px',

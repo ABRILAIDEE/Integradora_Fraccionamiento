@@ -1,12 +1,23 @@
 import React from 'react';
+
+import { useNavigate } from 'react-router-dom';
 import usuarioIcon from '../assets/usuario.png';
 
 const PerfilScreen = () => {
+  const navigate = useNavigate(); // Hook para navegar
+
+  const handleEditarPerfil = () => {
+    navigate('/editar-perfil'); // Navegar a la pantalla de edición de perfil
+  };
+  const handleGoToLogin = () => {
+    navigate('/login'); // Redirige a LoginScreen
+  };
+
   return (
- <div style={styles.container}>
+    <div style={styles.container}>
       <div style={styles.header}>
-        <span style={styles.logo}>SCSVF</span>
-        <button style={styles.logoutButton}>Cerrar sesión</button>
+      <span onClick={handleGoToLogin} style={styles.logo}>SCSVF</span>
+        <button onClick={handleGoToLogin} style={styles.logoutButton} >Cerrar sesión</button>
       </div>
 
       <div style={styles.content}>
@@ -17,28 +28,29 @@ const PerfilScreen = () => {
 
           <div style={styles.formContainer}>
             <label style={styles.label}>Nombre completo:</label>
-            <input style={styles.input} value="Juan Pérez" readOnly />
+            <input style={styles.input} value="Nombre" readOnly />
 
             <label style={styles.label}>Correo electrónico:</label>
-            <input style={styles.input} value="juanperez@gmail.com" readOnly />
+            <input style={styles.input} value="Email" readOnly />
 
             <label style={styles.label}>Edad:</label>
-            <input style={styles.input} value="34" readOnly />
+            <input style={styles.input} value="Edad" readOnly />
 
             <label style={styles.label}>Fecha de nacimiento:</label>
-            <input style={styles.input} value="13/05/1987" readOnly />
+            <input style={styles.input} value="Fecha de nacimiento" readOnly />
 
             <label style={styles.label}>Dirección:</label>
-            <input style={styles.input} value="Av. Colima No.35 Calle Lluvia" readOnly />
+            <input style={styles.input} value="Direccion" readOnly />
 
             <label style={styles.label}>Teléfono:</label>
-            <input style={styles.input} value="777 123 1233" readOnly />
+            <input style={styles.input} value="Telefono" readOnly />
           </div>
 
-   
           <div style={styles.buttonContainer}>
             <button style={styles.closeButton}>Cerrar sesión</button>
-            <button style={styles.editButton}>Editar información</button>
+            <button style={styles.editButton} onClick={handleEditarPerfil}>
+              Editar información
+            </button>
           </div>
         </div>
       </div>
@@ -88,9 +100,9 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'rgba(240, 149, 96, 0.9)', 
-    padding: '160px',
+    padding: '30px',
     borderRadius: '15px',
-    height: '700px',
+    height: '874px',
     
   },
   title: {
@@ -157,7 +169,7 @@ const styles = {
     cursor: 'pointer',
     fontWeight: 'bold',
     fontSize: '16px',
-    marginTop: '10px', // Espacio entre botones
+    //marginTop: '10px', // Espacio entre botones
   },
 };
 
