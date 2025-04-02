@@ -38,6 +38,7 @@ public class JWTUtil {
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY.getBytes())
+                .setAllowedClockSkewSeconds(30)
                 .parseClaimsJws(token)
                 .getBody();
     }
