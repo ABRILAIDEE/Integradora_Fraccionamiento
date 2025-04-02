@@ -1,7 +1,9 @@
 package com.utez.edu.integradorafraccionamiento.modules.visits;
 
 import com.utez.edu.integradorafraccionamiento.modules.status.Status;
+import com.utez.edu.integradorafraccionamiento.utils.QR.QRCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +11,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+//@CrossOrigin(origins = "{*}")
 @RestController
 @RequestMapping("/api/visitas")
 public class VisitController {
 
     @Autowired
     private VisitService visitService;
+
+    @Autowired
+    private QRCodeService qrCodeService;
 
     @GetMapping
     @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver todas las visitas
@@ -56,4 +61,23 @@ public class VisitController {
                                           @RequestBody Status nuevoEstado) {
         return visitService.updateStatus(id, nuevoEstado);
     }
+
+    @GetMapping(value = "/generateQR/{id}", produces = MediaType.IMAGE_PNG_VALUE)
+    @Secured({"ROLE_RESIDENT"}) // Solo los residentes pueden generar QR de sus visitas
+    public ResponseEntity<byte[]> generateQRCode(@PathVariable Long id) {
+        try {
+            String qrData = "https://miapp.com/visit/" + id; // URL que se abrirá al escanear el QR
+            byte[] qrImage = qrCodeService.generateQRCodeImage(qrData, 300, 300);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrImage);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/validateQR/{id}")
+    @Secured({"ROLE_GUARD"}) // Solo guardias pueden validar QR
+    public ResponseEntity<String> validateQR(@PathVariable Long id) {
+        return visitService.validateVisit(id);
+    }
+
 }

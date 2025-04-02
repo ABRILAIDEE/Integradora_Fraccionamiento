@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "estatus")
+@Table(name = "status")
 public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

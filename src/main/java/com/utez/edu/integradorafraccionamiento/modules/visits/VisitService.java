@@ -145,4 +145,19 @@ public class VisitService {
             return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
         }
     }
+
+    // SERVICIO PARA QR
+
+    public ResponseEntity<String> validateVisit(Long visitId) {
+        return visitRepository.findById(visitId)
+                .map(visit -> {
+                    if (visit.getStatus().getName().equals("Pendiente")) {
+                        visit.getStatus().setName("En progreso");  // Actualiza el estado de la visita
+                        visitRepository.save(visit);
+                        return ResponseEntity.ok("QR válido, acceso permitido.");
+                    }
+                    return ResponseEntity.badRequest().body("QR inválido o visita caducada.");
+                })
+                .orElse(ResponseEntity.badRequest().body("Visita no encontrada."));
+    }
 }
