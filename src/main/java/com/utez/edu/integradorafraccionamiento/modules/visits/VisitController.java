@@ -66,7 +66,7 @@ public class VisitController {
     @Secured({"ROLE_RESIDENT"}) // Solo los residentes pueden generar QR de sus visitas
     public ResponseEntity<byte[]> generateQRCode(@PathVariable Long id) {
         try {
-            String qrData = "https://miapp.com/visit/" + id; // URL que se abrirá al escanear el QR
+            String qrData = "https://localhost/visit/" + id; // URL que se abrirá al escanear el QR
             byte[] qrImage = qrCodeService.generateQRCodeImage(qrData, 300, 300);
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrImage);
         } catch (Exception e) {
