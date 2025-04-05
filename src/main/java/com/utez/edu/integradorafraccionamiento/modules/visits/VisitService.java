@@ -145,4 +145,73 @@ public class VisitService {
             return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
         }
     }
+
+    //Encontrar visitas pendientes
+    public ResponseEntity<?> findPendingVisits() {
+        List<Visit> pendingVisits = visitRepository.findByStatusId(1L); // 1 representa "Pendiente"
+        return new ResponseEntity<>(pendingVisits, HttpStatus.OK);
+    }
+
+    //Encontrar visitas en progreso
+    public ResponseEntity<?> findInProgressVisits() {
+        List<Visit> progressVisits = visitRepository.findByStatusId(2L); // 2 representa "Pendiente"
+        return new ResponseEntity<>(progressVisits, HttpStatus.OK);
+    }
+
+
+    // SERVICE PARA REGRESAR QR
+    public Visit saveAndReturnVisit(LocalDate fecha, LocalTime hora, int numeroPersonas, String descripcion,
+                                    String tipoVisita, String placasVehiculo, String palabraClave,
+                                    String nombreVisitante, Long residentId, Long houseId, Long statusId,
+                                    MultipartFile fotoPlacas, MultipartFile fotoCajuela, MultipartFile fotoIne) throws IOException {
+
+        if (descripcion == null || descripcion.trim().isEmpty()) {
+            throw new RuntimeException("La descripción no puede ser nula o vacía");
+        }
+
+        Resident resident = residentRepository.findById(residentId)
+                .orElseThrow(() -> new RuntimeException("Residente no encontrado"));
+        House house = houseRepository.findById(houseId)
+                .orElseThrow(() -> new RuntimeException("Casa no encontrada"));
+        Status status = statusRepository.findById(Math.toIntExact(statusId))
+                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+        byte[] fotoPlacasBytes = (fotoPlacas != null && !fotoPlacas.isEmpty()) ? fotoPlacas.getBytes() : null;
+        byte[] fotoCajuelaBytes = (fotoCajuela != null && !fotoCajuela.isEmpty()) ? fotoCajuela.getBytes() : null;
+        byte[] fotoIneBytes = (fotoIne != null && !fotoIne.isEmpty()) ? fotoIne.getBytes() : null;
+
+        Visit visit = new Visit(status, house, resident, fotoIneBytes, fotoCajuelaBytes, fotoPlacasBytes,
+                nombreVisitante, palabraClave, placasVehiculo, tipoVisita, descripcion,
+                numeroPersonas, hora, fecha);
+
+        return visitRepository.save(visit); // Devuelve la entidad con su ID
+    }
+
+    //Incrementar idStatus
+    public ResponseEntity<?> avanzarEstado(long visitaId) {
+        Optional<Visit> optionalVisit = visitRepository.findById(visitaId);
+        if (optionalVisit.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Visita no encontrada");
+        }
+
+        Visit visita = optionalVisit.get();
+        int estadoActualId = visita.getStatus().getId();
+
+        if (estadoActualId >= 3) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La visita ya está en estado finalizado.");
+        }
+
+        int nuevoEstadoId = estadoActualId + 1;
+        Optional<Status> nuevoStatus = statusRepository.findById(nuevoEstadoId);
+        if (nuevoStatus.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontró el nuevo estado.");
+        }
+
+        visita.setStatus(nuevoStatus.get());
+        visitRepository.save(visita);
+
+        return ResponseEntity.ok("Estado actualizado correctamente a: " + nuevoStatus.get().getName());
+    }
+
+
 }

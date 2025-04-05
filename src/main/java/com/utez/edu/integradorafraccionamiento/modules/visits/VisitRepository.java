@@ -12,4 +12,8 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     //Visit findById(long id);
     Visit save(Visit visit);
     Optional<Visit> findById(Long id);
+
+    // Método para filtrar visitas por estado
+    List<Visit> findByStatusId(Long statusId);
+
 }
