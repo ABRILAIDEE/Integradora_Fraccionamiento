@@ -6,6 +6,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin(origins = {"*"})
 @RestController
 @RequestMapping("/api/casas")
 public class HouseController {
