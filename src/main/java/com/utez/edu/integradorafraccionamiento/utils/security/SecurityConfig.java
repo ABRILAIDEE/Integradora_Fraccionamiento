@@ -1,6 +1,6 @@
 package com.utez.edu.integradorafraccionamiento.utils.security;
 
-import com.utez.edu.integradorafraccionamiento.security.ResidentDetailsService;
+import com.utez.edu.integradorafraccionamiento.utils.security.ResidentDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.cors().and().csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/auth/**").permitAll()  // Permitir todas las rutas de autenticación
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "GUARD", "RESIDENT")  // Asegurar roles

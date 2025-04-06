@@ -14,7 +14,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
+@CrossOrigin(origins = {"*"})
 @RestController
 @RequestMapping("/api/visitas")
 public class VisitController {
@@ -22,7 +22,7 @@ public class VisitController {
     @Autowired
     private VisitService visitService;
 
-    @GetMapping
+    @GetMapping("")
     @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver todas las visitas
     public ResponseEntity<?> findAll() {
         return visitService.findAll();
@@ -35,7 +35,7 @@ public class VisitController {
     }
 
     // CONTROLADOR ACTUALIZADO
-    @PostMapping
+    @PostMapping("")
     @Secured({"ROLE_RESIDENT"})
     public ResponseEntity<?> save(@RequestParam("fecha") LocalDate fecha,
                                   @RequestParam("hora") LocalTime hora,
@@ -111,6 +111,18 @@ public class VisitController {
     @Secured({"ROLE_ADMIN", "ROLE_GUARD"})
     public ResponseEntity<?> avanzarEstado(@PathVariable("id") long id) {
         return visitService.avanzarEstado(id);
+    }
+
+    @GetMapping("/pendiente/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver visitas pendientes
+    public ResponseEntity<?> findPendingVisitById(@PathVariable Long id) {
+        return visitService.findPendingVisitById(id);
+    }
+
+    @GetMapping("/progreso/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver visitas en progreso
+    public ResponseEntity<?> findInProgressVisitById(@PathVariable Long id) {
+        return visitService.findInProgressVisitById(id);
     }
 
 }

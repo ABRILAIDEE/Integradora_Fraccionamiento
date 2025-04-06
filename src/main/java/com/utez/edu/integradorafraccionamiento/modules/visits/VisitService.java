@@ -213,5 +213,24 @@ public class VisitService {
         return ResponseEntity.ok("Estado actualizado correctamente a: " + nuevoStatus.get().getName());
     }
 
+    public ResponseEntity<?> findPendingVisitById(Long visitId) {
+        Status status = new Status();
+        status.setId(1); // Estado "Pendiente"
+
+        Optional<Visit> visit = visitRepository.findByIdAndStatus(visitId, status);
+        return visit.isPresent()
+                ? new ResponseEntity<>(visit.get(), HttpStatus.OK)
+                : new ResponseEntity<>("Visita no encontrada o estado incorrecto", HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<?> findInProgressVisitById(Long visitId) {
+        Status status = new Status();
+        status.setId(2); // Estado "En Progreso"
+
+        Optional<Visit> visit = visitRepository.findByIdAndStatus(visitId, status);
+        return visit.isPresent()
+                ? new ResponseEntity<>(visit.get(), HttpStatus.OK)
+                : new ResponseEntity<>("Visita no encontrada o estado incorrecto", HttpStatus.NOT_FOUND);
+    }
 
 }

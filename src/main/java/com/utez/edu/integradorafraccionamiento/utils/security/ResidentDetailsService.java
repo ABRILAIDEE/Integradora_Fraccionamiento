@@ -1,4 +1,4 @@
-package com.utez.edu.integradorafraccionamiento.security;
+package com.utez.edu.integradorafraccionamiento.utils.security;
 
 import com.utez.edu.integradorafraccionamiento.modules.resident.Resident;
 import com.utez.edu.integradorafraccionamiento.modules.resident.ResidentRepository;

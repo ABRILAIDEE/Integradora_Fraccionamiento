@@ -1,19 +1,22 @@
-package com.utez.edu.integradorafraccionamiento.modules.visits;
+    package com.utez.edu.integradorafraccionamiento.modules.visits;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+    import com.utez.edu.integradorafraccionamiento.modules.status.Status;
+    import org.springframework.data.jpa.repository.JpaRepository;
+    import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+    import java.util.List;
+    import java.util.Optional;
 
-@Repository
-public interface VisitRepository extends JpaRepository<Visit, Long> {
-    List<Visit> findAll();
-    //Visit findById(long id);
-    Visit save(Visit visit);
-    Optional<Visit> findById(Long id);
+    @Repository
+    public interface VisitRepository extends JpaRepository<Visit, Long> {
+        List<Visit> findAll();
+        //Visit findById(long id);
+        Visit save(Visit visit);
+        Optional<Visit> findById(Long id);
 
-    // Método para filtrar visitas por estado
-    List<Visit> findByStatusId(Long statusId);
+        // Método para filtrar visitas por estado
+        List<Visit> findByStatusId(Long statusId);
 
-}
+        Optional<Visit> findByIdAndStatus(Long id, Status status);
+
+    }

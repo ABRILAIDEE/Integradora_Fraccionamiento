@@ -94,6 +94,7 @@ public class AuthService {
     /**
      * Verificar el código OTP ingresado por el residente.
      */
+
     @Transactional
     public ResponseEntity<?> verifyOtp(OtpVerificationDTO otpVerificationDTO) {
         // Obtener el OTP guardado
