@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import { AuthContext } from '../../context/AuthContext';
-import { useState, useContext } from "react";
-const img = require('../../assets/solitude.png');
+import React, { useState, useContext } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import { AuthContext } from "../../context/AuthContext";
+
+const img = require("../../assets/solitude.png");
 
 export default function LoginScreen({ navigation }) {
   const { login } = useContext(AuthContext);
@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
           label="Usuario"
           mode="outlined"
           style={styles.input}
-          theme={{ colors: { primary: 'orange', underlineColor: 'transparent' } }}
+          theme={{ colors: { primary: "orange", underlineColor: "transparent" } }}
           autoCapitalize="none"
           onChangeText={(text) => setUsername(text.trim().toLowerCase())}
         />
@@ -31,7 +31,7 @@ export default function LoginScreen({ navigation }) {
           mode="outlined"
           style={[styles.input, { marginBottom: 40 }]}
           secureTextEntry
-          theme={{ colors: { primary: 'orange', underlineColor: 'transparent' } }}
+          theme={{ colors: { primary: "orange", underlineColor: "transparent" } }}
           onChangeText={setPassword}
         />
 
@@ -40,7 +40,6 @@ export default function LoginScreen({ navigation }) {
           buttonColor="orange"
           contentStyle={styles.button}
           onPress={() => login(username, password)}
-          //onPress={() => navigation.navigate('HomeScreen')}
         >
           Ingresar
         </Button>
@@ -48,10 +47,7 @@ export default function LoginScreen({ navigation }) {
         <Button
           mode="text"
           textColor="black"
-          onPress={() => navigation.reset({
-            index: 0,
-            routes: [{ name: 'LoginEnterPhone' }],
-          })}
+          onPress={() => navigation.navigate("LoginEnterPhoneScreen")}
         >
           Soy residente
         </Button>
@@ -63,48 +59,41 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F28D52',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F28D52",
   },
   image: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
-    width: '120%',
-    height: '50%',
-    resizeMode: 'cover',
+    width: "120%",
+    height: "50%",
+    resizeMode: "cover",
     borderRadius: 40,
   },
   card: {
     marginTop: 180,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width: '90%',
-    alignItems: 'center',
+    width: "90%",
+    alignItems: "center",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 50,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  text: {
-    marginTop: 20,
-    fontSize: 12,
-    marginBottom: 10,
-    textAlign: 'center',
-    paddingBottom: 10,
+    fontWeight: "500",
+    textAlign: "center",
   },
   button: {
     paddingVertical: 5,
@@ -112,7 +101,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: '100%',
+    width: "100%",
     marginBottom: 20,
   },
 });

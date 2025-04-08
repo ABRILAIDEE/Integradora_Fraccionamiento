@@ -1,27 +1,104 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"; // Añadido `Image`
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import {ScrollView, FlatList} from "react-native-gesture-handler"
-
-import { Button } from "react-native-web";
+import { FlatList } from "react-native-gesture-handler";
+import VisitService from "../../services/VisitService";
+import { AuthContext } from "../../context/AuthContext";
 
 const back = require('../../assets/flecha-izquierda.png');
 const user = require('../../assets/cuenta.png');
 
 export default function ResidentVisitsScreen({navigation}) {
-    const visitas = [
-        { id: "1", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "2", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "3", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "4", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "5", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "6", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "7", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "8", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "9", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "10", nombre: "Angel Daniel", hora: "18:00" },
-        { id: "11", nombre: "Angel Daniel", hora: "18:00" },
-    ];
+    // Estado para almacenar las visitas - inicializado como array vacío
+    const [visitas, setVisitas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    
+    // Obtenemos los datos del usuario desde el contexto de autenticación
+    const { user } = useContext(AuthContext);
+
+    // Función para obtener las visitas del residente actual
+    const fetchVisitas = async () => {
+        try {
+            // Verificamos que existan los datos necesarios
+            if (!user || !user.userId || !user.token) {
+                console.error("No se encontró la información de sesión:", user);
+                Alert.alert('Error', 'No se encontró la información de sesión');
+                setLoading(false);
+                return;
+            }
+            
+            console.log("ID de usuario:", user.userId);
+            console.log("Token:", user.token);
+            
+            // Antes de la llamada a la API, verificamos la estructura de user.token
+            if (typeof user.token !== 'string') {
+                console.error("Token no es una cadena:", user.token);
+                Alert.alert('Error', 'El token de autenticación no es válido');
+                setLoading(false);
+                return;
+            }
+            
+            // Llamar al servicio para obtener las visitas del residente
+            // Verificamos si es necesario decodificar el token
+            const token = user.token.includes(' ') ? user.token.split(' ')[1] : user.token;
+            
+            console.log("Token usado para la petición:", token);
+            const response = await VisitService.getVisitsByResidentId(user.userId, token);
+            
+            console.log("Respuesta completa:", response);
+            
+            // Verificar la estructura de la respuesta
+            let visitasData = [];
+            
+            // Comprobar diferentes estructuras posibles
+            if (response && response.data && Array.isArray(response.data)) {
+                // Si la respuesta tiene estructura { data: [...] }
+                visitasData = response.data;
+                console.log("Usando response.data");
+            } else if (response && response.body && Array.isArray(response.body)) {
+                // Si la respuesta tiene estructura { body: [...] }
+                visitasData = response.body;
+                console.log("Usando response.body");
+            } else if (response && Array.isArray(response)) {
+                // Si la respuesta es directamente un array
+                visitasData = response;
+                console.log("Usando response directamente");
+            } else if (response && typeof response === 'object') {
+                console.log("Estructura de respuesta inesperada:", response);
+                // Intentar extraer datos de cualquier propiedad que sea un array
+                for (const key in response) {
+                    if (Array.isArray(response[key])) {
+                        visitasData = response[key];
+                        console.log("Encontrado array en propiedad:", key);
+                        break;
+                    }
+                }
+            }
+            
+            console.log("Visitas procesadas:", visitasData);
+            setVisitas(visitasData || []);
+            
+            // Si no se encontraron visitas pero la respuesta no era undefined
+            if ((!visitasData || visitasData.length === 0) && response) {
+                console.warn("No se pudieron extraer visitas de la respuesta:", response);
+            }
+            
+            setLoading(false);
+        } catch (error) {
+            console.error('Error al cargar las visitas:', error);
+            console.error('Detalles del error:', error.response ? error.response.data : 'No hay detalles adicionales');
+            Alert.alert('Error', 'No se pudieron cargar las visitas');
+            setLoading(false);
+            setVisitas([]);
+        }
+    };
+
+    // Cargar las visitas cuando el componente se monta o cuando cambia el usuario
+    useEffect(() => {
+        if (user && user.token) { 
+            fetchVisitas();
+        }
+    }, [user]);
 
     return (
         <View style={styles.container}>
@@ -29,27 +106,46 @@ export default function ResidentVisitsScreen({navigation}) {
                 <TouchableOpacity
                 onPress={() => navigation.navigate('ResidentHome')}>
                     <Ionicons name="arrow-back" size={28} color="black" />
-                    </TouchableOpacity>
+                </TouchableOpacity>
                 <Text style={styles.text}>SCSVF</Text>
                 <TouchableOpacity>
                 </TouchableOpacity>
             </View>
             <Text style={styles.subtitle}>Mis visitas</Text>
-            <FlatList
-                data={visitas}
-                keyExtractor={(item) => item.id}
-                style={{ flex: 1, width: "100%" }}
-                contentContainerStyle={{ paddingBottom: 20,  flexGrow: 1  }}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <TouchableOpacity>
+            
+            {loading ? (
+                <ActivityIndicator size="large" color="#000" style={styles.loader} />
+            ) : (visitas && visitas.length > 0) ? (
+                <FlatList
+                    data={visitas}
+                    keyExtractor={(item, index) => (item?.id?.toString() || `visit-${index}`)}
+                    style={{ flex: 1, width: "100%" }}
+                    contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity 
+                            style={styles.card}
+                            onPress={() => navigation.navigate('VisitDetailsScreen', { visitId: item.id })}
+                        >
                             <Text style={styles.cardText}>
-                                {item.nombre} | Hora: {item.hora}
+                                {item.nombreVisitante || "Visitante"} | Hora: {item.hora || "No especificada"}
+                            </Text>
+                            <Text style={styles.cardStatus}>
+                                Estado: {item.status?.nombre || item.status?.name || "Pendiente"}
                             </Text>
                         </TouchableOpacity>
-                    </View>
-                )}
-            />
+                    )}
+                />
+            ) : (
+                <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyText}>No tienes visitas registradas</Text>
+                    <TouchableOpacity 
+                        style={styles.refreshButton}
+                        onPress={fetchVisitas}
+                    >
+                        <Text style={styles.refreshButtonText}>Reintentar</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </View>
     );
 }
@@ -87,13 +183,19 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: "85%",
         alignSelf: "center",
-        marginBottom: 5, 
+        marginBottom: 10,
     },
     cardText: {
         fontSize: 18,
         fontWeight: "bold",
         color: "#000",
         textAlign: "center"
+    },
+    cardStatus: {
+        fontSize: 14,
+        color: "#555",
+        textAlign: "center",
+        marginTop: 5
     },
     logo: {
         width: 30,
@@ -105,5 +207,33 @@ const styles = StyleSheet.create({
         marginRight: 10,
         fontWeight: 'bold',
         textAlign: 'center',
-      }
+    },
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20
+    },
+    emptyText: {
+        fontSize: 18,
+        color: "#000",
+        textAlign: "center",
+        marginBottom: 20
+    },
+    refreshButton: {
+        backgroundColor: "#5A2D0C",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5
+    },
+    refreshButtonText: {
+        color: "#FFF",
+        fontSize: 16,
+        fontWeight: "bold"
+    }
 });

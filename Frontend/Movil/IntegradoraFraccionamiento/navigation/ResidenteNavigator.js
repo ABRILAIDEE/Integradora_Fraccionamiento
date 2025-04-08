@@ -9,6 +9,8 @@ import ResidentEditProfileScreen from '../screens/residente/ResidentEditProfileS
 import ResidentCreateVisits from '../screens/residente/ResidentCreateVisits';
 import GenerateQRScreen from '../screens/residente/GenerateQR';
 import { Feather } from "@expo/vector-icons";
+import VisitDetailsScreen from "../screens/residente/VisitDetailsScreen";
+import VisitQRScreen from "../screens/residente/VisitQRScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,6 +58,16 @@ const ResidenteStack = () => (
         component={GenerateQRScreen}
         options={{ headerShown: false }}
         />
+        <Stack.Screen 
+        name="VisitDetailsScreen" 
+        component={VisitDetailsScreen}
+        options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+        name="VisitQRScreen" 
+        component={VisitQRScreen}
+        options={{ headerShown: false }}
+        />
   </Stack.Navigator>
 );
 
@@ -101,6 +113,16 @@ const ResidenteStack1 = () => (
         component={GenerateQRScreen}
         options={{ headerShown: false }}
         />
+        <Stack.Screen 
+        name="VisitDetailsScreen" 
+        component={VisitDetailsScreen}
+        options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+        name="VisitQRScreen" 
+        component={VisitQRScreen}
+        options={{ headerShown: false }}
+        />
   </Stack.Navigator>
 );
 
@@ -144,6 +166,16 @@ const ResidenteStack2 = () => (
         <Stack.Screen 
         name="GenerateQR" 
         component={GenerateQRScreen}
+        options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+        name="VisitDetailsScreen" 
+        component={VisitDetailsScreen}
+        options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+        name="VisitQRScreen" 
+        component={VisitQRScreen}
         options={{ headerShown: false }}
         />
   </Stack.Navigator>
