@@ -42,7 +42,7 @@ public class HouseController {
                                     @RequestParam("calle") String calle,
                                     @RequestParam("numeroCasa") String numeroCasa,
                                     @RequestParam("descripcion") String descripcion,
-                                    @RequestParam("foto") MultipartFile foto) {
+                                    @RequestParam(value = "foto", required = false) MultipartFile foto) {
         return houseService.update(id, direccion, calle, numeroCasa, descripcion, foto);
     }
 }

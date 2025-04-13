@@ -42,4 +42,15 @@ public class CustomResponseEntity {
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
+
+    public ResponseEntity<?> get403Response(String customMessage) {
+        body = new HashMap<>();
+        body.put("message", customMessage != null ? customMessage : "Acceso denegado");
+        body.put("status", "FORBIDDEN");
+        body.put("code", 403);
+
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+    }
+
+
 }

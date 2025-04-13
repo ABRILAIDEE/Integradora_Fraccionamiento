@@ -28,7 +28,7 @@ public class ResidentController {
     }
 
     @PostMapping
-    @Secured({"ROLE_ADMIN"}) // Solo el administrador puede registrar nuevos residentes
+        //@Secured({"ROLE_ADMIN"}) // Solo el administrador puede registrar nuevos residentes
     public ResponseEntity<?> save(@RequestBody Resident resident) {
         return residentService.save(resident);
     }

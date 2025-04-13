@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// 10.- Crear el controller para Auth
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = {"*"})
@@ -35,4 +34,6 @@ public class AuthController {
         // Llamamos al servicio para verificar el OTP
         return authService.verifyOtp(otpVerificationDTO);
     }
+
+
 }

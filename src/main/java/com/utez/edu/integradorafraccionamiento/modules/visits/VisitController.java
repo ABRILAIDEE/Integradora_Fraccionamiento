@@ -36,7 +36,7 @@ public class VisitController {
 
     // CONTROLADOR ACTUALIZADO
     @PostMapping("")
-    @Secured({"ROLE_RESIDENT"})
+    @Secured({"ROLE_RESIDENT", "ROLE_ADMIN"})
     public ResponseEntity<?> save(@RequestParam("fecha") LocalDate fecha,
                                   @RequestParam("hora") LocalTime hora,
                                   @RequestParam("numeroPersonas") int numeroPersonas,

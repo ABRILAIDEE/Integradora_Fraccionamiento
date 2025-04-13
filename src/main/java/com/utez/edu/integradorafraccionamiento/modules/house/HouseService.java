@@ -70,12 +70,17 @@ public class HouseService {
         House house = houseRepository.findById(id);
         if (house != null) {
             try {
-                byte[] fotoBytes = foto.getBytes();
                 house.setDireccion(direccion);
                 house.setCalle(calle);
                 house.setNumeroCasa(numeroCasa);
                 house.setDescripcion(descripcion);
-                house.setFoto(fotoBytes);
+
+                // Solo actualizar la foto si se envió
+                if (foto != null && !foto.isEmpty()) {
+                    byte[] fotoBytes = foto.getBytes();
+                    house.setFoto(fotoBytes);
+                }
+
                 updated = houseRepository.save(house);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -93,4 +98,5 @@ public class HouseService {
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
     }
+
 }

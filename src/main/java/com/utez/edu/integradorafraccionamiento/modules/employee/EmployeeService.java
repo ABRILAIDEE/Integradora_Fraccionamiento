@@ -1,4 +1,5 @@
 package com.utez.edu.integradorafraccionamiento.modules.employee;
+import com.utez.edu.integradorafraccionamiento.utils.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -16,6 +18,9 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private CustomResponseEntity response;
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> findAll() {
@@ -101,4 +106,57 @@ public class EmployeeService {
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
     }
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> findAllGuards() {
+        List<Employee> guards = employeeRepository.findByRolId(2L); // 2 = ROLE_GUARD
+        Map<String, Object> body = new HashMap<>();
+
+        body.put("message", guards.isEmpty() ? "No hay guardias registrados" : "Operación exitosa");
+        body.put("status", 200);
+        body.put("data", guards);
+
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
+    //service para profile
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> findByEmail(String email) {
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmail(email);  // El repositorio devuelve un Optional
+
+        Map<String, Object> body = new HashMap<>();
+
+        if (optionalEmployee.isPresent()) {
+            body.put("message", "Operación realizada exitosamente");
+            body.put("status", 200);
+            body.put("data", optionalEmployee.get());
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        } else {
+            body.put("message", "Empleado no encontrado");
+            body.put("status", 404);
+            return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<?> updateByEmail(String email, Employee updated) {
+        Optional<Employee> optional = employeeRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            return response.get404Response();
+        }
+
+        Employee existing = optional.get();
+
+        // actualiza solo los campos permitidos
+        existing.setNombre(updated.getNombre());
+        existing.setApellidos(updated.getApellidos());
+        existing.setEdad(updated.getEdad());
+        existing.setFechaNacimiento(updated.getFechaNacimiento());
+        existing.setDireccion(updated.getDireccion());
+        existing.setCalle(updated.getCalle());
+        existing.setTelefono(updated.getTelefono());
+
+        Employee saved = employeeRepository.save(existing);
+
+        return response.getOkResponse("Perfil actualizado correctamente", "OK", 200, saved);
+    }
+
 }

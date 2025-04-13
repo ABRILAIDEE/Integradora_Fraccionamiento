@@ -31,4 +31,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     // Buscar empleado solo por email
     Optional<Employee> findByEmail(String email);
+
+    List<Employee> findByRolId(long rolId);
+
+
+
 }

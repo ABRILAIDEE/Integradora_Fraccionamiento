@@ -48,21 +48,29 @@ public class AuthService {
 
         if (found.isEmpty()) {
             return customResponseEntity.get404Response(); // Empleado no encontrado
-        } else {
-            try {
-                EmployeeDetailsImpl employeeDetails = new EmployeeDetailsImpl(found);
-                return customResponseEntity.getOkResponse(
-                        "Inicio de sesión exitoso",
-                        "OK",
-                        200,
-                        jwtUtil.generateToken(employeeDetails) // Generar JWT
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-                return customResponseEntity.get400Response();
-            }
+        }
+
+        Employee employee = found.get();
+
+        // 🚨 Nueva validación de estado
+        if (!"Activo".equalsIgnoreCase(employee.getEstado())) {
+            return customResponseEntity.get403Response("Tu cuenta está inactiva");
+        }
+
+        try {
+            EmployeeDetailsImpl employeeDetails = new EmployeeDetailsImpl(found);
+            return customResponseEntity.getOkResponse(
+                    "Inicio de sesión exitoso",
+                    "OK",
+                    200,
+                    jwtUtil.generateToken(employeeDetails) // Generar JWT
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customResponseEntity.get400Response();
         }
     }
+
 
     /**
      * Enviar código OTP a un residente basado en su número de teléfono.
@@ -74,6 +82,11 @@ public class AuthService {
         if (resident.isEmpty()) {
             return customResponseEntity.get404Response(); // Residente no encontrado
         }
+
+        if (!"Activo".equalsIgnoreCase(resident.get().getEstado())) {
+            return customResponseEntity.get403Response("Tu cuenta está inactiva");
+        }
+
 
         // Generar el código OTP
         String otp = otpService.generateOTP();
@@ -112,12 +125,17 @@ public class AuthService {
             return customResponseEntity.get404Response(); // Residente no encontrado
         }
 
-        // Generar JWT para el residente
+        if (!"Activo".equalsIgnoreCase(resident.get().getEstado())) {
+            return customResponseEntity.get403Response("Tu cuenta está inactiva");
+        }
+
+// Generar JWT para el residente
         return customResponseEntity.getOkResponse(
                 "Autenticación exitosa",
                 "OK",
                 200,
                 jwtUtil.generateTokenForResident(resident.get())
         );
+
     }
 }
