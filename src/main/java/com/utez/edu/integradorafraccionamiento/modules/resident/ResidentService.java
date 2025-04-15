@@ -3,6 +3,7 @@ package com.utez.edu.integradorafraccionamiento.modules.resident;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.utez.edu.integradorafraccionamiento.modules.OTPCode.OTPService;
+import com.utez.edu.integradorafraccionamiento.utils.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,8 @@ public class ResidentService {
 
     @Autowired
     private OTPService otpService; // Servicio para generar y validar OTP
+    @Autowired
+    private CustomResponseEntity customResponseEntity;
 
     // Método para obtener todos los residentes
     @Transactional(readOnly = true)
@@ -196,4 +199,29 @@ public class ResidentService {
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
     }
+
+    public ResponseEntity<?> findByTelefono(String telefono) {
+        Optional<Resident> optional = residentRepository.findByTelefono(telefono);
+        if (optional.isEmpty())
+            return customResponseEntity.get404Response();
+        return customResponseEntity.getOkResponse("Residente encontrado", "OK", 200, optional.get());
+    }
+
+    public ResponseEntity<?> updateByTelefono(String telefono, Resident updated) {
+        Optional<Resident> optional = residentRepository.findByTelefono(telefono);
+        if (optional.isEmpty())
+            return customResponseEntity.get404Response();
+
+        Resident existing = optional.get();
+        existing.setNombre(updated.getNombre());
+        existing.setApellidos(updated.getApellidos());
+        existing.setEdad(updated.getEdad());
+        existing.setFechaNacimiento(updated.getFechaNacimiento());
+        existing.setEmail(updated.getEmail());
+        // etc.
+
+        residentRepository.save(existing);
+        return customResponseEntity.getOkResponse("Residente actualizado", "OK", 200, existing);
+    }
+
 }

@@ -19,4 +19,5 @@
 
         Optional<Visit> findByIdAndStatus(Long id, Status status);
 
+        List<Visit> findByResidentId(Long residentId);
     }

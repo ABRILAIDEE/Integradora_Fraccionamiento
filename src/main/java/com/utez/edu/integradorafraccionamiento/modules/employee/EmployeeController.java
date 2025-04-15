@@ -21,7 +21,7 @@
         }
 
         @GetMapping("/me")
-        @Secured({"ROLE_ADMIN", "ROLE_GUARD", "ROLE_USER"})
+        @Secured({"ROLE_ADMIN", "ROLE_GUARD", "ROLE_RESIDENT"})
         public ResponseEntity<?> getCurrentEmployee(Authentication authentication) {
             String username = authentication.getName();  // Usamos el nombre de usuario del JWT o el autenticado
             return employeeService.findByEmail(username);  // Usamos el email para buscar el empleado

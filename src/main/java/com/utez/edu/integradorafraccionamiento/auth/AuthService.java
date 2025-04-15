@@ -136,6 +136,5 @@ public class AuthService {
                 200,
                 jwtUtil.generateTokenForResident(resident.get())
         );
-
     }
 }

@@ -22,7 +22,7 @@ public class House {
     @Column(name = "calle", nullable = false)
     private String calle;
 
-    @Column(name = "numero_casa", nullable = false)
+    @Column(name = "numero_casa", nullable = false, unique = true)
     private String numeroCasa;
 
     @Column(name = "descripcion", nullable = false)
@@ -31,6 +31,9 @@ public class House {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] foto;  // Aquí se almacenará la imagen como BLOB
+
+    @Column(name = "estado", nullable = false)
+    private String estado = "Activa";
 
     @OneToMany(mappedBy = "house", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -46,38 +49,41 @@ public class House {
     }
 
     //2.- Constructor con parámetros con atributos de la clase
-    public House(String direccion, String calle, String numeroCasa, String descripcion, byte[] foto) {
+    public House(String direccion, String calle, String numeroCasa, String descripcion, String estado, byte[] foto) {
         this.direccion = direccion;
         this.calle = calle;
         this.numeroCasa = numeroCasa;
         this.descripcion = descripcion;
         this.foto = foto;
+        this.estado = estado;
     }
 
     //3.- Constructor con parametros de llave y atributos de la clase
-    public House(long id, String direccion, String calle, String numeroCasa, String descripcion, byte[] foto) {
+    public House(long id, String direccion, String calle, String numeroCasa, String descripcion, String estado, byte[] foto) {
         this.id = id;
         this.direccion = direccion;
         this.calle = calle;
         this.numeroCasa = numeroCasa;
         this.descripcion = descripcion;
         this.foto = foto;
+        this.estado = estado;
     }
 
 
     //4.- Constructor con relaciones y atributos de la clase
-    public House(String direccion, String calle, String numeroCasa, String descripcion, byte[] foto, List<Resident> residentes, List<Visit> visitas) {
+    public House(String direccion, String calle, String numeroCasa, String descripcion, String estadom, byte[] foto, List<Resident> residentes, List<Visit> visitas) {
         this.direccion = direccion;
         this.calle = calle;
         this.numeroCasa = numeroCasa;
         this.descripcion = descripcion;
         this.foto = foto;
+        this.estado = estado;
         this.residentes = residentes;
         this.visitas = visitas;
     }
 
     //5.- Constructor con todos los atributos de la clase, atributos de relacion y llave de la clase
-    public House(long id, String direccion, String calle, String numeroCasa, String descripcion, byte[] foto, List<Resident> residentes, List<Visit> visitas) {
+    public House(long id, String direccion, String calle, String numeroCasa, String descripcion, String estado, byte[] foto, List<Resident> residentes, List<Visit> visitas) {
         this.id = id;
         this.direccion = direccion;
         this.calle = calle;
@@ -86,6 +92,8 @@ public class House {
         this.foto = foto;
         this.residentes = residentes;
         this.visitas = visitas;
+        this.estado = estado;
+
     }
 
     // ---------- GETTERS Y SETTERS ---------
@@ -152,4 +160,13 @@ public class House {
     public void setVisitas(List<Visit> visitas) {
         this.visitas = visitas;
     }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
 }

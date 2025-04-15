@@ -6,9 +6,13 @@ import com.utez.edu.integradorafraccionamiento.modules.resident.Resident;
 import com.utez.edu.integradorafraccionamiento.modules.resident.ResidentRepository;
 import com.utez.edu.integradorafraccionamiento.modules.status.Status;
 import com.utez.edu.integradorafraccionamiento.modules.status.StatusRepository;
+import com.utez.edu.integradorafraccionamiento.modules.visits.DTO.VisitSummaryDTO;
+import com.utez.edu.integradorafraccionamiento.utils.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,6 +39,8 @@ public class VisitService {
     private StatusRepository statusRepository;
     @Autowired
     private HouseRepository houseRepository;
+    @Autowired
+    private CustomResponseEntity customResponseEntity;
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> findAll() {
@@ -232,5 +239,37 @@ public class VisitService {
                 ? new ResponseEntity<>(visit.get(), HttpStatus.OK)
                 : new ResponseEntity<>("Visita no encontrada o estado incorrecto", HttpStatus.NOT_FOUND);
     }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> findMyVisits(Authentication authentication) {
+        String telefono = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Optional<Resident> optionalResident = residentRepository.findByTelefono(telefono);
+        if (optionalResident.isEmpty()) {
+            return customResponseEntity.get404Response();
+        }
+
+        Resident resident = optionalResident.get();
+        List<Visit> visitas = visitRepository.findByResidentId(resident.getId());
+
+        List<VisitSummaryDTO> visitasDTO = visitas.stream().map(visit ->
+                new VisitSummaryDTO(
+                        visit.getNombreVisitante(),
+                        visit.getTipoVisita(),
+                        visit.getFecha(),
+                        visit.getHora(),
+                        visit.getDescripcion(),
+                        visit.getStatus().getName()
+                )
+        ).collect(Collectors.toList());
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", visitasDTO.isEmpty() ? "No hay visitas registradas" : "Operación exitosa");
+        body.put("status", 200);
+        body.put("data", visitasDTO);
+
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
 
 }

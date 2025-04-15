@@ -42,13 +42,13 @@ public class HouseService {
     }
 
     @Transactional(rollbackFor = {IOException.class, Exception.class})
-    public ResponseEntity<?> save(String direccion, String calle, String numeroCasa, String descripcion, MultipartFile foto) {
+    public ResponseEntity<?> save(String direccion, String calle, String numeroCasa, String descripcion, String estado, MultipartFile foto) {
         Map<String, Object> body = new HashMap<>();
         House saved = null;
 
         try {
             byte[] fotoBytes = foto.getBytes();
-            House house = new House(direccion, calle, numeroCasa, descripcion, fotoBytes);
+            House house = new House(direccion, calle, numeroCasa, descripcion, estado, fotoBytes);
             saved = houseRepository.save(house);
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class HouseService {
     }
 
     @Transactional(rollbackFor = {IOException.class, Exception.class})
-    public ResponseEntity<?> update(long id, String direccion, String calle, String numeroCasa, String descripcion, MultipartFile foto) {
+    public ResponseEntity<?> update(long id, String direccion, String calle, String numeroCasa, String descripcion, String estado, MultipartFile foto) {
         Map<String, Object> body = new HashMap<>();
         House updated = null;
 
@@ -73,6 +73,7 @@ public class HouseService {
                 house.setDireccion(direccion);
                 house.setCalle(calle);
                 house.setNumeroCasa(numeroCasa);
+                house.setEstado(estado);
                 house.setDescripcion(descripcion);
 
                 // Solo actualizar la foto si se envió
@@ -98,5 +99,16 @@ public class HouseService {
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> findAllActive() {
+        List<House> activeHouses = houseRepository.findByEstado("Activa");
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", activeHouses.isEmpty() ? "No hay casas activas" : "Consulta exitosa");
+        body.put("status", 200);
+        body.put("data", activeHouses);
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
 
 }

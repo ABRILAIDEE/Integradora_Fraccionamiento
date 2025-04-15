@@ -20,6 +20,12 @@ public class HouseController {
         return houseService.findAll();
     }
 
+    @GetMapping("/activas")
+    @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo administradores y guardias pueden ver todas las casas
+    public ResponseEntity<?> findAllActive() {
+        return houseService.findAllActive();
+    }
+
     @GetMapping("/{id}") // Obtener casa por ID
     @Secured({"ROLE_ADMIN", "ROLE_GUARD", "ROLE_RESIDENT"}) // Residentes pueden ver su propia casa, guardias y admins pueden ver todas
     public ResponseEntity<?> findById(@PathVariable long id) {
@@ -32,8 +38,9 @@ public class HouseController {
                                   @RequestParam("calle") String calle,
                                   @RequestParam("numeroCasa") String numeroCasa,
                                   @RequestParam("descripcion") String descripcion,
+                                  @RequestParam("estado") String estado,
                                   @RequestParam("foto") MultipartFile foto) {
-        return houseService.save(direccion, calle, numeroCasa, descripcion, foto);
+        return houseService.save(direccion, calle, numeroCasa, descripcion, estado, foto);
     }
 
     @PutMapping("/{id}") // Actualizar casa
@@ -42,7 +49,8 @@ public class HouseController {
                                     @RequestParam("calle") String calle,
                                     @RequestParam("numeroCasa") String numeroCasa,
                                     @RequestParam("descripcion") String descripcion,
+                                    @RequestParam("estado") String estado,
                                     @RequestParam(value = "foto", required = false) MultipartFile foto) {
-        return houseService.update(id, direccion, calle, numeroCasa, descripcion, foto);
+        return houseService.update(id, direccion, calle, numeroCasa, descripcion, estado, foto);
     }
 }

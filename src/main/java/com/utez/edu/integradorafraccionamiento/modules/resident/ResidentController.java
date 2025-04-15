@@ -3,6 +3,7 @@ package com.utez.edu.integradorafraccionamiento.modules.resident;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,20 @@ public class ResidentController {
         return residentService.findAll();
     }
 
+    @GetMapping("/me")
+    @Secured({"ROLE_RESIDENT", "ROLE_ADMIN"})
+    public ResponseEntity<?> getCurrentResident(Authentication authentication) {
+        String telefono = authentication.getName(); // 👉 Este es el subject del token: el teléfono
+        return residentService.findByTelefono(telefono);
+    }
+
+    @PutMapping("/me")
+    @Secured({"ROLE_RESIDENT", "ROLE_ADMIN"})
+    public ResponseEntity<?> updateProfile(@RequestBody Resident updated, Authentication authentication) {
+        String telefono = authentication.getName();
+        return residentService.updateByTelefono(telefono, updated);
+    }
+
     @GetMapping("/{id}")
     @Secured({"ROLE_ADMIN", "ROLE_RESIDENT"}) // Un residente puede ver su propio perfil
     public ResponseEntity<?> findById(@PathVariable long id) {
@@ -28,7 +43,7 @@ public class ResidentController {
     }
 
     @PostMapping
-        //@Secured({"ROLE_ADMIN"}) // Solo el administrador puede registrar nuevos residentes
+    @Secured({"ROLE_ADMIN"}) // Solo el administrador puede registrar nuevos residentes
     public ResponseEntity<?> save(@RequestBody Resident resident) {
         return residentService.save(resident);
     }
@@ -44,4 +59,5 @@ public class ResidentController {
     public ResponseEntity<?> updateStatus(@PathVariable long id, @RequestBody Resident resident) {
         return residentService.updateStatus(id, resident.getEstado());
     }
+
 }

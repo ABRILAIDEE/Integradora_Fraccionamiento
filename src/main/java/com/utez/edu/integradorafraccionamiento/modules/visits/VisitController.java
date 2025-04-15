@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,11 @@ public class VisitController {
     @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver todas las visitas
     public ResponseEntity<?> findAll() {
         return visitService.findAll();
+    }
+    @GetMapping("/me")
+    @Secured("ROLE_RESIDENT")
+    public ResponseEntity<?> findMyVisits(Authentication authentication) {
+        return visitService.findMyVisits(authentication);
     }
 
     @GetMapping("/{id}")
@@ -61,7 +67,7 @@ public class VisitController {
                     fotoPlacas, fotoCajuela, fotoIne
             );
 
-            String qrUrl = "https://localhost:8080/api/visitas/" + savedVisit.getId();
+            String qrUrl = "http://localhost:8080/api/visitas/" + savedVisit.getId();
 
             response.put("message", "Visita registrada exitosamente");
             response.put("status", 201);
@@ -124,5 +130,8 @@ public class VisitController {
     public ResponseEntity<?> findInProgressVisitById(@PathVariable Long id) {
         return visitService.findInProgressVisitById(id);
     }
+
+
+
 
 }
