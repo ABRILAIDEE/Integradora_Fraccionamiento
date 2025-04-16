@@ -224,4 +224,10 @@ public class ResidentService {
         return customResponseEntity.getOkResponse("Residente actualizado", "OK", 200, existing);
     }
 
+    public Resident getResidentByTelefono(String telefono) {
+        return residentRepository.findByTelefono(telefono)
+                .orElse(null);
+    }
+
+
 }

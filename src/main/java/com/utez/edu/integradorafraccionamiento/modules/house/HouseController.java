@@ -21,7 +21,7 @@ public class HouseController {
     }
 
     @GetMapping("/activas")
-    @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo administradores y guardias pueden ver todas las casas
+    @Secured({"ROLE_ADMIN", "ROLE_GUARD", "ROLE_RESIDENT"})
     public ResponseEntity<?> findAllActive() {
         return houseService.findAllActive();
     }

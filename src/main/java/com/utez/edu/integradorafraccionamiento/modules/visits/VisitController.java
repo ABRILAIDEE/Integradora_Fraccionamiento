@@ -1,6 +1,9 @@
 package com.utez.edu.integradorafraccionamiento.modules.visits;
 
+import com.utez.edu.integradorafraccionamiento.modules.resident.Resident;
+import com.utez.edu.integradorafraccionamiento.modules.resident.ResidentRepository;
 import com.utez.edu.integradorafraccionamiento.modules.status.Status;
+import com.utez.edu.integradorafraccionamiento.modules.visits.DTO.VisitRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = {"*"})
 @RestController
@@ -22,6 +26,9 @@ public class VisitController {
 
     @Autowired
     private VisitService visitService;
+
+    @Autowired
+    private ResidentRepository residentRepository;
 
     @GetMapping("")
     @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver todas las visitas
@@ -40,7 +47,115 @@ public class VisitController {
         return visitService.findById(id);
     }
 
-    // CONTROLADOR ACTUALIZADO
+    @PostMapping("/me")
+    @Secured("ROLE_RESIDENT")
+    public ResponseEntity<?> createVisitAsResident(@RequestBody VisitRequestDTO request, Authentication authentication) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Obtener número de teléfono del token
+            String telefono = authentication.getName();
+            Optional<Resident> optionalResident = residentRepository.findByTelefono(telefono);
+
+            if (optionalResident.isEmpty()) {
+                response.put("message", "Residente no encontrado");
+                response.put("status", 404);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            Resident resident = optionalResident.get();
+
+            // Aquí seteas el residentId automáticamente
+            Long residentId = resident.getId();
+
+            Visit savedVisit = visitService.saveAndReturnVisit(
+                    request.getFecha(),
+                    request.getHora(),
+                    request.getNumeroPersonas(),
+                    request.getDescripcion(),
+                    request.getTipoVisita(),
+                    request.getPlacasVehiculo(),
+                    request.getPalabraClave(),
+                    request.getNombreVisitante(),
+                    residentId, // ← este se obtuvo del token
+                    request.getHouseId(),
+                    request.getStatusId(),
+                    null, null, null // sin fotos por ahora
+            );
+
+            String qrUrl = "http://localhost:8080/api/visitas/" + savedVisit.getId();
+
+            response.put("message", "Visita registrada exitosamente");
+            response.put("status", 201);
+            response.put("qrUrl", qrUrl);
+            response.put("visitId", savedVisit.getId());
+            response.put("nombreVisitante", savedVisit.getNombreVisitante());
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        } catch (RuntimeException | IOException e) {
+            e.printStackTrace();
+            response.put("message", "Error: " + e.getMessage());
+            response.put("status", 400);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "Error inesperado: " + e.getMessage());
+            response.put("status", 500);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //MANDAR JSON CRUDO
+    @PostMapping("")
+    @Secured({"ROLE_RESIDENT", "ROLE_ADMIN"})
+    public ResponseEntity<?> saveJson(@RequestBody VisitRequestDTO request) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Visit savedVisit = visitService.saveAndReturnVisit(
+                    request.getFecha(),
+                    request.getHora(),
+                    request.getNumeroPersonas(),
+                    request.getDescripcion(),
+                    request.getTipoVisita(),
+                    request.getPlacasVehiculo(),
+                    request.getPalabraClave(),
+                    request.getNombreVisitante(),
+                    request.getResidentId(),
+                    request.getHouseId(),
+                    request.getStatusId(),
+                    null, // fotoPlacas
+                    null, // fotoCajuela
+                    null  // fotoIne
+            );
+
+            String qrUrl = "http://localhost:8080/api/visitas/" + savedVisit.getId();
+
+            response.put("message", "Visita registrada exitosamente");
+            response.put("status", 201);
+            response.put("qrUrl", qrUrl);
+            response.put("visitId", savedVisit.getId());
+            response.put("nombreVisitante", savedVisit.getNombreVisitante());
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        } catch (RuntimeException | IOException e) {
+            e.printStackTrace();
+            response.put("message", "Error: " + e.getMessage());
+            response.put("status", 400);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "Error inesperado: " + e.getMessage());
+            response.put("status", 500);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+/*
+    // CONTROLADOR ACTUALIZADO, NO RECIBE JSON CRUDO
     @PostMapping("")
     @Secured({"ROLE_RESIDENT", "ROLE_ADMIN"})
     public ResponseEntity<?> save(@RequestParam("fecha") LocalDate fecha,
@@ -89,6 +204,7 @@ public class VisitController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+*/
 
 
     @PatchMapping("/updateStatus/{id}")
@@ -130,8 +246,5 @@ public class VisitController {
     public ResponseEntity<?> findInProgressVisitById(@PathVariable Long id) {
         return visitService.findInProgressVisitById(id);
     }
-
-
-
 
 }

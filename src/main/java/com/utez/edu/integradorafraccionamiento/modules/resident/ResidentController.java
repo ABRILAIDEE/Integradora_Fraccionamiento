@@ -60,4 +60,5 @@ public class ResidentController {
         return residentService.updateStatus(id, resident.getEstado());
     }
 
+
 }
