@@ -2,7 +2,11 @@ package com.utez.edu.integradorafraccionamiento.modules.visits;
 
 import com.utez.edu.integradorafraccionamiento.modules.resident.Resident;
 import com.utez.edu.integradorafraccionamiento.modules.resident.ResidentRepository;
+import com.utez.edu.integradorafraccionamiento.modules.resident.ResidentService;
 import com.utez.edu.integradorafraccionamiento.modules.status.Status;
+import com.utez.edu.integradorafraccionamiento.modules.tempVisit.TemporaryVisitToken;
+import com.utez.edu.integradorafraccionamiento.modules.tempVisit.TemporaryVisitTokenRepository;
+import com.utez.edu.integradorafraccionamiento.modules.tempVisit.TemporaryVisitTokenService;
 import com.utez.edu.integradorafraccionamiento.modules.visits.DTO.VisitRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +34,15 @@ public class VisitController {
     @Autowired
     private ResidentRepository residentRepository;
 
+    @Autowired
+    private ResidentService residentService;
+
+    @Autowired
+    private TemporaryVisitTokenService tokenService;
+
+    @Autowired
+    private TemporaryVisitTokenRepository tokenRepository;
+
     @GetMapping("")
     @Secured({"ROLE_ADMIN", "ROLE_GUARD"}) // Solo admin y guardias pueden ver todas las visitas
     public ResponseEntity<?> findAll() {
@@ -47,6 +60,7 @@ public class VisitController {
         return visitService.findById(id);
     }
 
+    //CREAR UNA VISITA, OTORGANDO EL ID_RESIDENTE MEDIANTE AUTHENTICATION
     @PostMapping("/me")
     @Secured("ROLE_RESIDENT")
     public ResponseEntity<?> createVisitAsResident(@RequestBody VisitRequestDTO request, Authentication authentication) {
@@ -106,7 +120,7 @@ public class VisitController {
         }
     }
 
-    //MANDAR JSON CRUDO
+    //MANDAR JSON CRUDO, RESIDENTE_ID Y HOUSE_ID MANUALMENTE
     @PostMapping("")
     @Secured({"ROLE_RESIDENT", "ROLE_ADMIN"})
     public ResponseEntity<?> saveJson(@RequestBody VisitRequestDTO request) {
@@ -152,6 +166,63 @@ public class VisitController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //CONTROLADOR PARA USUARIO EXTERNO
+    @PostMapping("/public")
+    public ResponseEntity<?> createVisitAsGuest(@RequestBody VisitRequestDTO request,
+                                                @RequestParam("token") String token) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Optional<TemporaryVisitToken> optionalToken = tokenService.validateAndConsumeToken(token);
+
+            if (optionalToken.isEmpty()) {
+                response.put("message", "Token inválido o expirado");
+                return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            TemporaryVisitToken tempToken = optionalToken.get();
+
+            // Usamos residentId y houseId del token
+            Long residentId = tempToken.getResidentId();
+            Long houseId = tempToken.getHouseId();
+
+            Visit savedVisit = visitService.saveAndReturnVisit(
+                    request.getFecha(),
+                    request.getHora(),
+                    request.getNumeroPersonas(),
+                    request.getDescripcion(),
+                    request.getTipoVisita(),
+                    request.getPlacasVehiculo(),
+                    request.getPalabraClave(),
+                    request.getNombreVisitante(),
+                    residentId,
+                    houseId,
+                    1L, // status "pendiente"
+                    null, null, null
+            );
+
+            // Aquí marcamos el token como usado
+            tokenService.markAsUsed(token);
+
+            String qrUrl = "http://localhost:8080/api/visitas/" + savedVisit.getId();
+
+            response.put("message", "Visita registrada exitosamente");
+            response.put("status", 201);
+            response.put("visitId", savedVisit.getId());
+            response.put("nombreVisitante", savedVisit.getNombreVisitante());
+            response.put("qrUrl", qrUrl);
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "Error inesperado: " + e.getMessage());
+            response.put("status", 500);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 /*

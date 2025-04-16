@@ -31,6 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
+                        .requestMatchers("/api/visitas/public**").permitAll()  // ← Esto va antes que /api/**
                         .requestMatchers("/auth/**").permitAll()  // Permitir todas las rutas de autenticación
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "GUARD", "RESIDENT")  // Asegurar roles
                         .anyRequest().authenticated()
