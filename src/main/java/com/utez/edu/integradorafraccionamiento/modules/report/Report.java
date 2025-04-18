@@ -44,7 +44,7 @@ public class Report {
     @Column(name = "numero_personas", nullable = false)
     private boolean numeroPersonas; // Obligatorio (Check)
 
-    @Column(name = "observaciones", nullable = true)
+    @Column(name = "observaciones")
     private String observaciones; // Opcional (TextArea)
 
     @OneToOne

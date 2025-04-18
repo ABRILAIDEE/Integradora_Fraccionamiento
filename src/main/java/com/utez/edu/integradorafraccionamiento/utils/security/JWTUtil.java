@@ -48,7 +48,16 @@ public class JWTUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return createToken(new HashMap<>(), userDetails.getUsername());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", extractRole(userDetails)); // 👈 Agrega el rol
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    private String extractRole(UserDetails userDetails) {
+        return userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(auth -> auth.getAuthority().replace("ROLE_", ""))
+                .orElse("UNKNOWN");
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

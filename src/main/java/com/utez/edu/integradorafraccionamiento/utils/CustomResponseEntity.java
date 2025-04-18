@@ -52,5 +52,15 @@ public class CustomResponseEntity {
         return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
     }
 
+    public ResponseEntity<?> get401Response(String customMessage) {
+        body = new HashMap<>();
+        body.put("message", customMessage != null ? customMessage : "No autorizado");
+        body.put("status", "UNAUTHORIZED");
+        body.put("code", 401);
+
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+
 
 }

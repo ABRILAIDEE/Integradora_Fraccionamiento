@@ -64,4 +64,20 @@ public class TemporaryVisitTokenService {
         return Optional.of(tokenEntity);
     }
 
+    public boolean isTokenValid(String token) {
+        Optional<TemporaryVisitToken> optional = tokenRepository.findByToken(token);
+
+        if (optional.isEmpty()) return false;
+
+        TemporaryVisitToken tokenEntity = optional.get();
+
+        if (tokenEntity.isUsed()) return false;
+
+        LocalDateTime now = LocalDateTime.now();
+        return !tokenEntity.getCreatedAt()
+                .plusMinutes(tokenEntity.getExpirationMinutes())
+                .isBefore(now);
+    }
+
+
 }
